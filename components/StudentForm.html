@@ -2,8 +2,8 @@
   <h4>{edit ? 'Edit student info' : 'Add a student'}</h4>
   <form on:submit="handleSubmit(event)" novalidate ref:form>
     <fieldset>
-      <FancyTextInput label="Chinese name" pattern="^[\u3400-\u9FBF]+$" minlength="2" maxlength="10" required
-        description="2-10 Chinese characters" name="chineseNameField" bind:value=chineseName />
+      <FancyTextInput label="Chinese name" pattern="^[\u3400-\u9FBF]+$" minlength="2" maxlength="10" description="2-10 Chinese characters"
+        name="chineseNameField" bind:value=chineseName />
 
       <FancyTextInput label="Name in pinyin (optional)" pattern="^[a-zA-Zāáǎàēéěèīíǐìōóǒòūúǔùǖǘǚǜ\s']+$" minlength="2"
         maxlength="30" description="2-30 characters. Do not use tone numbers" name="pinyinNameField" bind:value=pinyinName />
@@ -36,15 +36,33 @@
 
       <input class="button-primary" type="submit" value="Save" ref:submit>
       <input class="button button-outline" type="reset" on:click="set({show:false})" value="Cancel">
+      {#if error}
+      <br>
+      <span class="error">{error}</span>
+      {/if}
     </fieldset>
   </form>
+  {#if edit}
+  <DeleteStudentButton student={id} />
+  {/if}
 </div>
 
 <style>
   .form-container {
     padding: 1rem;
     box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.2);
-    margin: 0.5rem;
+    margin: 1rem;
+    padding: 2rem;
+    width: 100%;
+    max-width: 42rem;
+  }
+
+  input[type=date] {
+    max-width: 40rem;
+  }
+
+  .error {
+    color: red;
   }
 
   select,
@@ -62,7 +80,8 @@
       this.refs.container.scrollIntoView({ behavior: 'smooth' })
     },
     components: {
-      FancyTextInput: './FancyTextInput.html'
+      FancyTextInput: './FancyTextInput.html',
+      DeleteStudentButton: './DeleteStudentButton.html'
     },
     data() {
       return {
@@ -70,11 +89,12 @@
         chineseName: '',
         pinyinName: '',
         englishName: '',
-        birthdate: '',
+        birthdate: null,
         gender: '',
         error: '',
         edit: false,
-        group: ''
+        group: '',
+        id: ''
       }
     },
     methods: {
