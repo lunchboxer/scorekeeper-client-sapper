@@ -1,7 +1,9 @@
 <nav>
   <ul class="float-left">
     <li><a class='{segment === undefined ? "selected" : ""}' href='.'>home</a></li>
+    {#if $login}
     <li><a class='{segment === "students" ? "selected" : ""}' href='students'>students</a></li>
+    {/if}
   </ul>
   <ul class="float-right">
     <li>
