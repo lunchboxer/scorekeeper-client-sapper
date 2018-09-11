@@ -1,0 +1,51 @@
+<Nav segment={child.segment} />
+<div class="container">
+  <main>
+    <svelte:component this={child.component} {...child.props} />
+  </main>
+
+  <footer>
+    <p>Created in 2018 by James Smith.</p>
+  </footer>
+</div>
+<NotificationList></NotificationList>
+
+
+<style>
+  .container {
+    margin-top: 1rem;
+  }
+
+  footer {
+    font-size: 75%;
+  }
+</style>
+
+<script>
+  import client from '../utils/feathers'
+  import store from '../utils/store.js'
+
+  export default {
+    components: {
+      Nav: '../components/Nav.html',
+      NotificationList: "../components/NotificationList.html"
+    },
+    store: () => store,
+    oncreate() {
+      client.authenticate().catch(store.set({ user: null, login: null }))
+      client.on('authenticated', this.authenticatedListener)
+      client.on('logout', this.logoutListener)
+    },
+    methods: {
+      async authenticatedListener(res) {
+        store.set({ login: res.accessToken })
+        const payload = await client.passport.verifyJWT(res.accessToken)
+        const user = await client.service('users').get(payload.userId)
+        store.set({ user })
+      },
+      logoutListener() {
+        store.set({ user: null, login: null })
+      }
+    }
+  };
+</script>

@@ -1,0 +1,40 @@
+<span class="notification-message">
+  {message}</span>
+<span class="notification-close" on:click="removeMessage(id)">&times;</span>
+
+
+<style>
+  .notification-message {
+    padding: 1rem;
+    float: left;
+  }
+
+  .notification-close {
+    padding: 1rem;
+    font-weight: 900;
+    font-size: 120%;
+    float: right;
+    color: var(--base-color);
+  }
+</style>
+
+<script>
+  import { removeMessage } from '../utils/notificationTools.js'
+
+  export default {
+    immutable: true,
+    // notifications should kill themselves
+    oncreate() {
+      const { id } = this.get()
+      this.timeout = setTimeout(() => {
+        this.removeMessage(id)
+      }, 4000)
+    },
+    ondestroy() {
+      clearTimeout(this.timeout);
+    },
+    methods: {
+      removeMessage
+    }
+  }
+</script>

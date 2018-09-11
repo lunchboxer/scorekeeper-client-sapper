@@ -1,0 +1,19 @@
+<svelte:head>
+  <title>Students</title>
+</svelte:head>
+
+<h1>Students</h1>
+
+{#if $login}
+<StudentList />
+{:else}
+<p><a href="login">Log in</a> to access the students.</p>
+{/if}
+
+<script>
+  export default {
+    components: {
+      StudentList: '../components/StudentList.html'
+    }
+  }
+</script>

@@ -1,0 +1,69 @@
+<nav>
+  <ul class="float-left">
+    <li><a class='{segment === undefined ? "selected" : ""}' href='.'>home</a></li>
+    <li><a class='{segment === "students" ? "selected" : ""}' href='students'>students</a></li>
+  </ul>
+  <ul class="float-right">
+    <li>
+      {#if $user}
+      <UserMenu segment={segment}></UserMenu>
+      {:else}
+      <a class='{segment === ("login"|| "signup") ? "selected" : ""}' href='login'>login/signup</a>
+      {/if}
+    </li>
+  </ul>
+</nav>
+
+<style>
+  nav {
+    font-weight: 300;
+    padding: 0 1em;
+  }
+
+  ul {
+    margin: 0;
+    padding: 0;
+  }
+
+  /* clearfix */
+  nav::after {
+    content: '';
+    display: block;
+    clear: both;
+  }
+
+  ul :global(li) {
+    display: block;
+    float: left;
+  }
+
+  ul :global(.selected) {
+    position: relative;
+    display: inline-block;
+  }
+
+  ul :global(.selected::after) {
+    position: absolute;
+    content: '';
+    width: calc(100% - 1em);
+    height: 2px;
+    background-color: var(--primary-color);
+    display: block;
+    bottom: -1px;
+  }
+
+  ul :global(a) {
+    text-decoration: none;
+    padding: 0.6em 0.5em;
+    display: block;
+    color: var(--base-color);
+  }
+</style>
+
+<script>
+  export default {
+    components: {
+      UserMenu: './UserMenu.html'
+    },
+  }
+</script>

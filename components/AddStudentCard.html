@@ -1,0 +1,51 @@
+{#if !show}
+<div class="add" on:click="showForm()">
+  <div class="face">
+    <i class="material-icons big">add</i>
+  </div>
+  <div class="name">
+    <span class="clearfix">add a</span>
+    <span>student</span>
+  </div>
+</div>
+{:else}
+<StudentForm bind:show {groupId} />
+{/if}
+
+
+<style>
+  div.add {
+    text-align: center;
+    padding: 1rem;
+    width: 11rem;
+    height: 15rem;
+    margin: 0.5rem;
+  }
+
+  div.add:hover {
+    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+  }
+
+  i.big {
+    font-size: 56px;
+  }
+</style>
+
+<script>
+  export default {
+    components: {
+      StudentForm: './StudentForm.html'
+    },
+    data() {
+      return {
+        show: false
+      }
+    },
+    methods: {
+      showForm() {
+        this.set({ show: true })
+      }
+    }
+  }
+</script>

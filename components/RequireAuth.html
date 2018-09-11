@@ -1,0 +1,8 @@
+<!-- slotted component is rendered even if not visible, 
+  doesn't wait for login to be truthy -->
+{#if $login}
+<slot />
+{:else}
+<h2>Restricted access</h2>
+<p>Please <a href="login">log in</a> to access this page.</p>
+{/if}

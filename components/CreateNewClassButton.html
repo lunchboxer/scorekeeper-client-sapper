@@ -1,0 +1,56 @@
+{#if showinput}
+<form on:submit="handleSubmit(event)" novalidate ref:form>
+  <FancyTextInput ref:input label="New class name" pattern="^\w+$" maxlength="20" required name="nameField" bind:value=name />
+  <input type="submit" ref:submit value="Create" />
+  <input type="reset" on:click="set({showinput: false, name: ''})" class="button-outline" value="Cancel" />
+  {#if error}
+  <br>
+  <span class="error">{error}</span>
+  {/if}
+</form>
+{:else}
+<button on:click='set({showinput: true})' class="button-outline">+ New class</button>
+{/if}
+
+<script>
+  import { addMessage } from '../utils/notificationTools.js'
+  import client from '../utils/feathers.js'
+  export default {
+    components: {
+      FancyTextInput: './FancyTextInput.html'
+    },
+    data() {
+      return {
+        showinput: false,
+        name: '',
+        error: ''
+      }
+    },
+    methods: {
+      handleSubmit(event) {
+        event.preventDefault()
+        const isValid = this.refs.form.checkValidity()
+        if (!isValid) {
+          this.addMessage("Please fix form errors first.")
+          return
+        }
+        event.target.querySelector("input[type=submit]").disabled = true
+        const { name } = this.get()
+        client
+          .service("student-groups")
+          .create({ name })
+          .then(() => {
+            this.refs.submit.disabled = false
+            this.addMessage("New class added successfully")
+            this.set({ error: '', showinput: false, name: '' })
+          })
+          .catch(error => {
+            this.refs.submit.disabled = false
+            this.set({ error: error.message })
+            this.addMessage("There was a problem creating the class.")
+          })
+      },
+      addMessage
+    }
+  }
+</script>

@@ -1,0 +1,86 @@
+<div class="menuwrapper">
+  <span on:click="set({visible: !visible})">{$user.username}</span>
+  {#if visible}
+  <ul transition:fade class="dropdown" on:click="set({visible:false})">
+    {#if segment!=="profile"}
+    <li><a href='profile'>profile</a></li>
+    {/if}
+    <li><a href="/" on:click="handleLogout()">log out</a></li>
+  </ul>
+  {/if}
+</div>
+
+<style>
+  .menuwrapper {
+    position: relative;
+    cursor: pointer;
+  }
+
+  span {
+    padding: 0.6em 0.5em;
+    display: block;
+    color: var(--base-color);
+  }
+
+  .dropdown {
+    /* visibility: hidden; */
+    z-index: 999;
+    background-color: var(--background);
+    position: absolute;
+    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.2);
+    width: 100px;
+    right: -1em;
+    margin: 0.2em;
+    padding: 0.3em 0.1em;
+    /* border: 1px solid lightgrey; */
+  }
+
+  ul.dropdown li {
+    display: block;
+    padding: 0.3em 0.5em;
+    text-align: center;
+    width: 100%;
+    margin: 0;
+  }
+
+  ul.dropdown li:hover {
+    background-color: var(--primary-color);
+    color: var(--color-on-primary);
+  }
+
+  li:hover a {
+    color: var(--color-on-primary);
+  }
+
+  .dropdown:before {
+    position: absolute;
+    z-index: -1;
+    content: '';
+    right: calc(50% - 6px);
+    top: -6px;
+    border-style: solid;
+    border-width: 0 4px 4px 4px;
+    border-color: transparent transparent var(--primary-color) transparent;
+    transition-duration: 0.3s;
+    transition-property: transform;
+  }
+</style>
+
+<script>
+  import { fade } from 'svelte-transitions'
+  import client from '../utils/feathers'
+  import { addMessage } from '../utils/notificationTools.js';
+
+  export default {
+    transitions: { fade },
+    data() {
+      return { visible: false }
+    },
+    methods: {
+      handleLogout() {
+        client.logout().then(addMessage("Logged out successfully."))
+      },
+      addMessage
+    }
+  }
+</script>

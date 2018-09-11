@@ -1,0 +1,48 @@
+<p>There are {students.length || 'no'} students registered {$groups.length && 'in ' + $groups.length + ' classes'}.</p>
+<CreateNewClassButton />
+{#if studentsByGroup}
+<p>Click a class name to change it.</p>
+{#each studentsByGroup as group}
+<StudentGroupListItem {...group} groupId={group.id} />
+{/each}
+{/if}
+
+<script>
+  import client from "../utils/feathers.js"
+  export default {
+    components: {
+      StudentGroupListItem: './StudentGroupListItem.html',
+      CreateNewClassButton: './CreateNewClassButton.html'
+    },
+    oncreate() {
+      this.students = client.service('students').watch()
+        .find().subscribe(students => this.set({ students: students.data }))
+      this.groups = client.service('student-groups').watch()
+        .find().subscribe(groups => {
+          const sortedGroups = groups.data.sort((a,b) => a.name > b.name )
+          this.store.set({ groups: sortedGroups })
+        })
+    },
+    ondestroy() {
+      this.students.unsubscribe()
+      this.groups.unsubscribe()
+    },
+    data() {
+      return {
+        students: [],
+        addStudent: false
+      }
+    },
+    computed: {
+      studentsByGroup: ({ students, $groups }) => {
+        const existing = $groups.map(group => {
+          group.students = students.filter(student => student.group === group.id)
+          return group
+        })
+        const nogroup = { name: "unassigned", students: [] }
+        nogroup.students = students.filter(student => student.group === null)
+        return [...existing, nogroup]
+      }
+    }
+  }
+</script>

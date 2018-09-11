@@ -1,0 +1,115 @@
+<div class="student-group">
+  <h3>
+    {#if showConfirm}
+    <span>Delete {name} Class?</span>
+    <span class="float-right" on:blur="set({showConfirm:false})">
+      <span on:click="handleDelete(event)">Yes</span>/
+      <span on:click="set({showConfirm: false})">No</span>
+    </span>
+
+    {:else}
+    {#if name !== "unassigned"}
+    <span contenteditable="true" on:blur="handleBlur(event)" ref:name>{name}</span>
+    class
+    {:else}
+    <span>Unassigned</span>
+    {/if}
+    <span class="studentscount">
+      {#if !students.length && name !== "unassigned"}
+
+      <span on:click="set({showConfirm: true})">&times; Delete class</span>
+      {:else}
+      {students.length} students
+      {/if}
+    </span>
+    {/if}
+    <!-- showConfirm -->
+  </h3>
+
+  <div class="studentlist">
+    <AddStudentCard {groupId} />
+
+    {#if students.length}
+    {#each students as student}
+    <StudentListItem {student} />
+    {/each}
+    {/if}
+  </div>
+</div>
+
+<style>
+  .studentlist {
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  [contenteditable="true"]:active,
+  [contenteditable="true"]:focus {
+    border: none;
+    border-bottom: 2px solid var(--base-color);
+    outline: none;
+    color: var(--base-color)
+  }
+
+  h3 {
+    width: 100%;
+    padding: 1rem 1rem 0.4rem;
+    margin: 0;
+  }
+
+  .studentscount {
+    float: right;
+  }
+
+  .student-group {
+    padding: 0 0 0.6rem;
+    margin: 0.5rem 0;
+  }
+</style>
+
+<script>
+  import client from '../utils/feathers.js'
+  import { addMessage } from '../utils/notificationTools.js'
+
+  export default {
+    components: {
+      StudentListItem: './StudentListItem.html',
+      AddStudentCard: './AddStudentCard.html'
+    },
+    methods: {
+      toggleEdit() {
+        const { currentEdit } = this.get()
+        this.set({ edit: !currentEdit })
+      },
+      handleBlur(event) {
+        const newName = event.target.innerText
+        const { id, name } = this.get()
+        if (newName === name || newName === '') {
+          event.target.innerText = name
+          return false
+        }
+        client.service('student-groups').patch(id, { "name": newName })
+          .then(addMessage('Class name successfully changed'))
+          .catch(err => console.log(err))
+      },
+      handleDelete(event) {
+        event.preventDefault()
+        const { groupId } = this.get()
+        client.service('student-groups').remove(groupId)
+          .then(() => {
+            this.set({ showConfirm: false })
+            addMessage('Class successfully deleted')
+          })
+          .catch(err => console.log(err))
+      },
+      addMessage
+    },
+    data() {
+      return {
+        edit: false,
+        name: '',
+        showConfirm: false
+      }
+    }
+  }
+</script>

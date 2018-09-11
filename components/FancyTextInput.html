@@ -1,0 +1,96 @@
+<div>
+  <label for={name}>{label}</label>
+  {#if error}
+  <div class="error-message">{error}</div>
+  {/if}
+</div>
+<!--  can't have dynamic type attribute and two-way value binding on one input -->
+{#if type === 'text'}
+<input type='text' {name} {pattern} {minlength} {maxlength} {required} aria-describedby={descriptionId} on:input="checkValidity()"
+  on:invalid="invalidHandler(event)" class:error="error" on:focus="set({showDescription: !showDescription})" on:blur="set({showDescription: !showDescription})"
+  bind:value ref:input style="max-width:{width}" />
+{:elseif type === 'password'}
+<input type='password' {name} {pattern} {minlength} {maxlength} {required} aria-describedby={descriptionId} on:input="checkValidity()"
+  on:invalid="invalidHandler(event)" class:error="error" on:focus="set({showDescription: !showDescription})" on:blur="set({showDescription: !showDescription})"
+  bind:value ref:input style="max-width:{width}" />
+{/if}
+{#if description && showDescription}
+<div id={descriptionId} class="description">
+  {description}
+</div>
+{/if}
+
+<style>
+  input[type="text"],
+  input[type="password"] {
+    max-width: 40rem;
+  }
+
+  .error {
+    border-color: red;
+    background-color: #FEE;
+  }
+
+  .description {
+    z-index: 99;
+    background-color: white;
+    position: absolute;
+    box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.2);
+    margin: -1rem 0 0 0;
+    padding: 0.1em 0.4em;
+    background: var(--primary-color);
+    color: var(--color-on-primary);
+    font-size: 80%;
+  }
+
+  .description:before {
+    position: absolute;
+    z-index: 99;
+    content: '';
+    left: 10px;
+    top: -4px;
+    border-style: solid;
+    border-width: 0 4px 4px 4px;
+    border-color: transparent transparent var(--primary-color) transparent;
+  }
+
+  .error-message {
+    color: red;
+    font-size: 80%;
+  }
+</style>
+
+<script>
+  export default {
+    data() {
+      return {
+        showDescription: false,
+        error: '',
+        required: false,
+        pattern: "^.+$",
+        minlength: 1,
+        maxlength: 100,
+        type: "text",
+        description: '',
+        width: '40rem'
+      }
+    },
+    computed: {
+      descriptionId: ({ name }) => `description${name}`
+    },
+    methods: {
+      invalidHandler(event) {
+        event.preventDefault()
+        this.checkValidity()
+      },
+      checkValidity() {
+        const input = this.refs.input
+        if (!input.validity.valid && input.validationMessage) {
+          this.set({ error: input.validationMessage })
+        } else {
+          this.set({ error: '' })
+        }
+      }
+    }
+  }
+</script>

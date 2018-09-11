@@ -1,0 +1,44 @@
+{#if $notifications}
+<ul class="notification-list">
+  {#each Object.entries($notifications) as [id, message]}
+  <li transition:slide class="notification">
+    <NotificationItem message={message} id={id} />
+  </li>
+  {/each}
+</ul>
+{/if}
+
+<style>
+  .notification-list {
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    top: 2rem;
+    right: 0;
+    margin: 2rem;
+    width: auto;
+    max-width: calc(100% - 4rem);
+  }
+
+  .notification {
+    list-style: none;
+    padding: 0 1rem;
+    margin: 0.5rem;
+    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.2);
+    width: 100%;
+    background-color: var(--background);
+  }
+</style>
+
+<script>
+  import { slide } from 'svelte-transitions'
+  export default {
+    data() {
+      return { newMessage: '' }
+    },
+    transitions: { slide },
+    components: {
+      NotificationItem: './NotificationItem.html'
+    }
+  }
+</script>

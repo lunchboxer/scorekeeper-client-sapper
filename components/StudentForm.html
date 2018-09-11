@@ -1,0 +1,130 @@
+<div class="form-container" ref:container>
+  <h4>{edit ? 'Edit student info' : 'Add a student'}</h4>
+  <form on:submit="handleSubmit(event)" novalidate ref:form>
+    <fieldset>
+      <FancyTextInput label="Chinese name" pattern="^[\u3400-\u9FBF]+$" minlength="2" maxlength="10" required
+        description="2-10 Chinese characters" name="chineseNameField" bind:value=chineseName />
+
+      <FancyTextInput label="Name in pinyin (optional)" pattern="^[a-zA-Zāáǎàēéěèīíǐìōóǒòūúǔùǖǘǚǜ\s']+$" minlength="2"
+        maxlength="30" description="2-30 characters. Do not use tone numbers" name="pinyinNameField" bind:value=pinyinName />
+
+      <FancyTextInput label="English name (optional)" maxlength="20" description="1-20 characters" name="englishNameField"
+        type="text" bind:value=englishName />
+
+      <label for="birthdateField">Birthdate</label>
+      <input id="birthdateField" type=date bind:value=birthdate />
+
+      <label>
+        <input type='radio' bind:group='gender' value='M'>
+        Male
+      </label>
+
+      <label>
+        <input type='radio' bind:group='gender' value='F'>
+        Female
+      </label>
+      {#if edit}
+      <label for="group-select">Class</label>
+      <select id="group-select" bind:value="group">
+        <option value="">none</option>
+        {#each $groups as group}
+        <option value={group.id}>{group.name}</option>
+        {/each}
+      </select>
+      <br>
+      {/if}
+
+      <input class="button-primary" type="submit" value="Save" ref:submit>
+      <input class="button button-outline" type="reset" on:click="set({show:false})" value="Cancel">
+    </fieldset>
+  </form>
+</div>
+
+<style>
+  .form-container {
+    padding: 1rem;
+    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.2);
+    margin: 0.5rem;
+  }
+
+  select,
+  select option {
+    max-width: 40rem;
+  }
+</style>
+
+<script>
+  import client from '../utils/feathers.js'
+  import { addMessage } from '../utils/notificationTools.js'
+
+  export default {
+    oncreate() {
+      this.refs.container.scrollIntoView({ behavior: 'smooth' })
+    },
+    components: {
+      FancyTextInput: './FancyTextInput.html'
+    },
+    data() {
+      return {
+        show: true,
+        chineseName: '',
+        pinyinName: '',
+        englishName: '',
+        birthdate: '',
+        gender: '',
+        error: '',
+        edit: false,
+        group: ''
+      }
+    },
+    methods: {
+      handleSubmit(event) {
+        event.preventDefault()
+        const isValid = this.refs.form.checkValidity()
+        if (!isValid) {
+          this.addMessage("Please fix form errors first.")
+          return
+        }
+        event.target.querySelector("input[type=submit]").disabled = true
+        if (this.get().edit) {
+          this.editStudent()
+        } else {
+          this.addStudent()
+        }
+      },
+      editStudent() {
+        const { chineseName, pinyinName, englishName, gender, birthdate, id, group } = this.get()
+        client
+          .service("students")
+          .update(id, { chineseName, pinyinName, englishName, gender, birthdate, group })
+          .then(() => {
+            this.refs.submit.disabled = false
+            this.addMessage("Student edited successfully")
+            this.set({ error: '', show: false })
+          })
+          .catch(error => {
+            this.refs.submit.disabled = false
+            this.set({ error: error.message })
+            this.addMessage("There was a problem editing the student.")
+          })
+      },
+      addStudent() {
+        const { chineseName, pinyinName, englishName, gender, birthdate, groupId } = this.get()
+        client
+          .service("students")
+          .create({ chineseName, pinyinName, englishName, gender, birthdate, group: groupId })
+          .then(() => {
+            this.refs.submit.disabled = false
+            this.addMessage("New student added successfully")
+            this.set({ error: '', show: false })
+          })
+          .catch(error => {
+            this.refs.submit.disabled = false
+            this.set({ error: error.message })
+            this.addMessage("There was a problem adding the student.")
+          })
+      },
+      addMessage
+    }
+  }
+</script>

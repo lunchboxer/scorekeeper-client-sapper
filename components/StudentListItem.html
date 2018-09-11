@@ -1,0 +1,84 @@
+{#if !edit}
+<div class="face-card" ref:container on:click="set({edit:true})">
+
+
+  <div class="face" data-gender={student.gender}>
+    <i class="material-icons face-picture">face</i>
+  </div>
+  <div class="name">
+    <span class="clearfix">{student.englishName || '--'}</span>
+    <span>{student.chineseName || '--'}</span>
+  </div>
+</div>
+{:else}
+<StudentForm {...student} edit bind:show='edit' />
+{/if}
+
+
+<style>
+  div.face-card {
+    text-align: center;
+    padding: 1rem;
+    width: 11rem;
+    display: block;
+    height: 15rem;
+    margin: 0.5rem;
+  }
+
+  div.face-card:hover {
+    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+  }
+
+  .face-picture {
+    font-size: 56px;
+    color: grey;
+  }
+
+  [data-gender=M] .face-picture {
+    color: lightblue;
+  }
+
+  [data-gender=F] .face-picture {
+    color: pink;
+  }
+</style>
+
+<script>
+  import client from '../utils/feathers.js'
+  import { addMessage } from '../utils/notificationTools.js'
+  export default {
+    components: {
+      StudentForm: './StudentForm.html'
+    },
+    data() {
+      return {
+        edit: false
+      }
+    },
+    computed: {
+      birthdate: ({ student }) => student.birthdate,
+      age: ({ birthdate }) => {
+        if (!birthdate) return '99'
+        const birthdateDate = new Date(birthdate)
+        var diffMs = Date.now() - birthdateDate.getTime()
+        var ageDate = new Date(diffMs)
+        return Math.abs(ageDate.getUTCFullYear() - 1970)
+      },
+      group: ({ $groups, student }) => $groups ? $groups.filter(group => group.id === student.group)[0] : null
+    },
+    methods: {
+      handleDelete(event) {
+        const { student } = this.get()
+        event.preventDefault()
+        client.service('students').remove(student.id).then(
+          addMessage(`Student #${student.id}, ${student.chineseName} deleted.`)
+        )
+      },
+      showEdit(event) {
+        event.preventDefault()
+        this.set({ edit: true })
+      }
+    }
+  }
+</script>

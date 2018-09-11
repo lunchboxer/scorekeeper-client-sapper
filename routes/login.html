@@ -1,0 +1,73 @@
+<svelte:head>
+  <title>Login</title>
+</svelte:head>
+
+<h1>Log in</h1>
+{#if $login}
+<p>You are already logged in.</p>
+{:else}
+<form on:submit="handleSubmit(event)">
+  <fieldset>
+    <label for="usernameField">Username</label>
+    <input type="text" id="usernameField" bind:value=username>
+    <label for="passwordField">Password</label>
+    <input type="password" id="passwordField" bind:value=password>
+    <br>
+    <input class="button" type="submit" value="Log in" id="loginButton">
+    <a class="button button-outline" href="signup">Sign up</a>
+    <br>
+    <span class="error">{error}</span>
+  </fieldset>
+</form>
+{/if}
+
+<style>
+  input[type="text"],
+  input[type="password"] {
+    max-width: 30rem;
+  }
+
+  .error {
+    color: red;
+  }
+</style>
+
+<script>
+  import client from "../utils/feathers";
+  import { goto } from "sapper/runtime";
+  import { addMessage } from "../utils/notificationTools.js";
+
+  export default {
+    data() {
+      return {
+        username: "",
+        password: "",
+        error: ""
+      };
+    },
+    methods: {
+      handleSubmit(event) {
+        event.target.querySelector("input[type=submit]").disabled = true;
+        event.preventDefault();
+        const { username, password } = this.get();
+        return client
+          .authenticate({
+            strategy: "local",
+            username,
+            password
+          })
+          .then(() => {
+            this.set({ username: "", password: "" });
+            goto("/");
+            addMessage(`Logged in as ${username}`);
+          })
+          .catch(error => {
+            event.target.querySelector("input[type=submit]").disabled = false;
+            this.set({ error: error.message });
+            addMessage("Something went wrong.")
+          });
+      },
+      addMessage
+    }
+  };
+</script>

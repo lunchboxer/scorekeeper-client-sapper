@@ -1,0 +1,56 @@
+<svelte:head>
+  <title>My profile</title>
+</svelte:head>
+
+<h1>User Profile</h1>
+
+<RequireAuth>
+  {#if !$user}
+  <p>loading...</p>
+  {:else}
+  <table>
+    <tbody>
+      <tr>
+        <td>username</td>
+        <td>{$user.username}</td>
+      </tr>
+      <tr>
+        <td>id</td>
+        <td>{$user.id}</td>
+      </tr>
+      <tr>
+        <td>created</td>
+        <td>{createdDate}</td>
+      </tr>
+      <tr>
+        <td>updated</td>
+        <td>{updatedDate}</td>
+      </tr>
+    </tbody>
+  </table>
+  {/if}
+</RequireAuth>
+
+<script>
+  export default {
+    components: {
+      RequireAuth: '../components/RequireAuth.html'
+    },
+    computed: {
+      createdDate: ({ $user }) => {
+        if ($user) {
+          const date = new Date($user.createdAt)
+          return date.toDateString()
+        }
+        return false
+      },
+      updatedDate: ({ $user }) => {
+        if ($user) {
+          const date = new Date($user.updatedAt)
+          return date.toDateString()
+        }
+        return false
+      }
+    }
+  }
+</script>
