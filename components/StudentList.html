@@ -2,7 +2,7 @@
 <CreateNewClassButton />
 {#if studentsByGroup}
 <p>Click a class name to change it.</p>
-{#each studentsByGroup as group}
+{#each studentsByGroup as group (group.id)}
 <StudentGroupListItem {...group} groupId={group.id} />
 {/each}
 {/if}

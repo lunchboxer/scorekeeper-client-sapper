@@ -4,7 +4,7 @@
 {#if classSessions.length}
 <p>Showing {classSessions.length} class sessions.</p>
 <ul>
-  {#each classSessions as session}
+  {#each classSessions as session (session.id)}
   <ClassSessionsListItem {session} />
   {/each}
 </ul>

@@ -30,7 +30,7 @@
     <AddStudentCard {groupId} />
 
     {#if students.length}
-    {#each students as student}
+    {#each students as student (student.id)}
     <StudentListItem {student} />
     {/each}
     {/if}
