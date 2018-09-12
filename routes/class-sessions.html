@@ -1,0 +1,19 @@
+<svelte:head>
+  <title>Class sessions</title>
+</svelte:head>
+
+<h1>Class sessions</h1>
+
+{#if $login}
+<ClassSessionsList />
+{:else}
+<p><a href="login">Log in</a> to access the class sessions.</p>
+{/if}
+
+<script>
+  export default {
+    components: {
+      ClassSessionsList: '../components/ClassSessionsList.html'
+    }
+  }
+</script>

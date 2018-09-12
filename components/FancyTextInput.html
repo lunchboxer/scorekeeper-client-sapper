@@ -1,18 +1,22 @@
 <div>
   <label for={name}>{label}</label>
   {#if error}
-  <div class="error-message">{error}</div>
+  <span class="error-message">{error}</span>
   {/if}
 </div>
 <!--  can't have dynamic type attribute and two-way value binding on one input -->
 {#if type === 'text'}
 <input type='text' {name} {pattern} {minlength} {maxlength} {required} aria-describedby={descriptionId} on:input="checkValidity()"
   on:invalid="invalidHandler(event)" class:error="error" on:focus="set({showDescription: !showDescription})" on:blur="set({showDescription: !showDescription})"
-  bind:value ref:input style="max-width:{width}" />
+  bind:value ref:input />
 {:elseif type === 'password'}
 <input type='password' {name} {pattern} {minlength} {maxlength} {required} aria-describedby={descriptionId} on:input="checkValidity()"
   on:invalid="invalidHandler(event)" class:error="error" on:focus="set({showDescription: !showDescription})" on:blur="set({showDescription: !showDescription})"
-  bind:value ref:input style="max-width:{width}" />
+  bind:value ref:input />
+{:elseif type === 'datetime-local'}
+<input type='datetime-local' {name} {required} aria-describedby={descriptionId} on:input="checkValidity()" on:invalid="invalidHandler(event)"
+  class:error="error" on:focus="set({showDescription: !showDescription})" on:blur="set({showDescription: !showDescription})"
+  bind:value ref:input />
 {/if}
 {#if description && showDescription}
 <div id={descriptionId} class="description">
@@ -21,8 +25,7 @@
 {/if}
 
 <style>
-  input[type="text"],
-  input[type="password"] {
+  input {
     max-width: 40rem;
   }
 
@@ -54,9 +57,15 @@
     border-color: transparent transparent var(--primary-color) transparent;
   }
 
+  label {
+    float: left;
+  }
+
   .error-message {
     color: red;
     font-size: 80%;
+    float: right;
+    padding-top: 0.3rem;
   }
 </style>
 

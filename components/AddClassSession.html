@@ -1,0 +1,18 @@
+{#if !show}
+<button class="button-outline" on:click="set({show:true})">+ New class session</button>
+{:else}
+<ClassSessionForm bind:show />
+{/if}
+
+<script>
+  export default {
+    components: {
+      ClassSessionForm: './ClassSessionForm.html'
+    },
+    data() {
+      return {
+        show: false
+      }
+    }
+  }
+</script>

@@ -1,0 +1,49 @@
+<p>View recent and upcoming class sessions</p>
+<AddClassSession />
+
+{#if classSessions.length}
+<p>Showing {classSessions.length} class sessions.</p>
+<ul>
+  {#each classSessions as session}
+  <ClassSessionsListItem {session} />
+  {/each}
+</ul>
+
+{/if}
+
+<script>
+  import client from '../utils/feathers.js'
+
+  export default {
+    oncreate() {
+      this.classSessions = client.service('class-sessions').watch()
+        .find().subscribe(res => {
+          const sessions = res.data.sort((a, b) => a.startsAt > b.startsAt)
+          this.set({ classSessions: sessions })
+        })
+      this.groups = client.service('student-groups').watch()
+        .find().subscribe(groups => {
+          const sortedGroups = groups.data.sort((a, b) => a.name > b.name)
+          this.store.set({ groups: sortedGroups })
+        })
+      this.interval = setInterval(() => {
+        this.set({ time: new Date() })
+      }, 30000);
+    },
+    ondestroy() {
+      this.classSessions.unsubscribe()
+      this.groups.unsubscribe()
+      clearInterval(this.interval)
+    },
+    components: {
+      AddClassSession: './AddClassSession.html',
+      ClassSessionsListItem: './ClassSessionsListItem.html'
+    },
+    data() {
+      return {
+        classSessions: [],
+        time: new Date()
+      }
+    }
+  }
+</script>

@@ -1,0 +1,20 @@
+<li>{group ? group.name + ' class' : 'No class'},
+  {startsString} - {endsString}</li>
+
+<script>
+  export default {
+    computed: {
+      startsAt: ({ session }) => session.startsAt,
+      startsString: ({ startsAt }) => {
+        const dateTime = new Date(startsAt)
+        return dateTime.toDateString()
+      },
+      endsAt: ({ session }) => session.endsAt,
+      endsString: ({ endsAt }) => {
+        const dateTime = new Date(endsAt)
+        return dateTime.toDateString()
+      },
+      group: ({ session, $groups }) => $groups.find(group => group.id === session.studentGroupId)
+    }
+  }
+</script>

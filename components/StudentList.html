@@ -19,7 +19,7 @@
         .find().subscribe(students => this.set({ students: students.data }))
       this.groups = client.service('student-groups').watch()
         .find().subscribe(groups => {
-          const sortedGroups = groups.data.sort((a,b) => a.name > b.name )
+          const sortedGroups = groups.data.sort((a, b) => a.name > b.name)
           this.store.set({ groups: sortedGroups })
         })
     },
@@ -29,8 +29,7 @@
     },
     data() {
       return {
-        students: [],
-        addStudent: false
+        students: []
       }
     },
     computed: {

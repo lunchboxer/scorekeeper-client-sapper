@@ -1,0 +1,96 @@
+<h3>{edit ? "Edit session": "Add a class session"}</h3>
+<form novalidate ref:form on:submit="handleSubmit(event)">
+  <fieldset>
+    <FancyTextInput type="datetime-local" label="Start date and time" name="startsAtField" bind:value=startsAt required />
+    <FancyTextInput type="datetime-local" label="End date and time" name="endsAtField" bind:value=endsAt required />
+
+    <label for="group-select">Class</label>
+    <select id="group-select" bind:value="group" required>
+      <option value=''></option>
+      {#each $groups as group}
+      <option value={group.id}>{group.name}</option>
+      {/each}
+    </select>
+    <br>
+    <input type="submit" value="Save" class="button" ref:submit />
+    <input type="reset" value="Cancel" class="button button-outline" on:click='set({show:false})' />
+    {#if error}
+    <br>
+    <span class="error">{error}</span>
+    {/if}
+  </fieldset>
+</form>
+
+<style>
+  select {
+    max-width: 40rem;
+  }
+
+  .error {
+    color: red;
+  }
+</style>
+
+<script>
+  import client from '../utils/feathers.js'
+  import { addMessage } from '../utils/notificationTools.js'
+
+  export default {
+    components: {
+      FancyTextInput: './FancyTextInput.html'
+    },
+    oncreate() {
+      this.refs.form.scrollIntoView({ behavior: 'smooth' })
+    },
+    data() {
+      return {
+        edit: false,
+        show: true,
+        group: '',
+        error: '',
+        time: new Date()
+      }
+    },
+    computed: {
+      startsAt: ({ time }) => time.toJSON(),
+      endsAt: ({ time }) => time.toJSON(),
+    },
+    methods: {
+      handleSubmit(event) {
+        event.preventDefault()
+        const isValid = this.refs.form.checkValidity()
+        if (!isValid) {
+          this.addMessage("Please fix form errors first.")
+          return
+        }
+        this.refs.submit.disabled = true
+        if (this.get().edit) {
+          this.editSession()
+        } else {
+          this.addSession()
+        }
+      },
+      addSession() {
+        const { startsAt, endsAt } = this.get()
+        const group = this.get().group || null
+        client
+          .service("class-sessions")
+          .create({ startsAt, endsAt, studentGroupId: group })
+          .then(() => {
+            this.addMessage("New session added successfully")
+            this.set({ error: '', show: false })
+          })
+          .catch(error => {
+            this.refs && (this.refs.submit.disabled = false)
+            this.set({ error: error.message })
+            this.addMessage("There was a problem adding the session.")
+          })
+
+      },
+      editSession() {
+        this.refs.submit.disabled = false
+      },
+      addMessage
+    }
+  }
+</script>
