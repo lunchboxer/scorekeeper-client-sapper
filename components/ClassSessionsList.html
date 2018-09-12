@@ -5,8 +5,8 @@
 <p>Showing {classSessions.length} class sessions. Click to edit.</p>
 <ul>
   {#each classSessions as session (session.id)}
-  <div class="listItemWrapper" transition:fly>
-    <ClassSessionsListItem {session} />
+  <div class="listItemWrapper">
+    <ClassSessionsListItem {session} {time} />
   </div>
 
   {/each}
@@ -16,7 +16,6 @@
 
 <script>
   import client from '../utils/feathers.js'
-  import { fly } from 'svelte-transitions'
 
   export default {
     oncreate() {
@@ -32,9 +31,8 @@
         })
       this.interval = setInterval(() => {
         this.set({ time: new Date() })
-      }, 30000);
+      }, 20000);
     },
-    transitions: { fly },
     ondestroy() {
       this.classSessions.unsubscribe()
       this.groups.unsubscribe()

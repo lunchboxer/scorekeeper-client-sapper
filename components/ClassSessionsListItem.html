@@ -11,17 +11,16 @@
     /* list-style-type: none; */
     padding: 1rem 0;
     margin: 1rem 0;
+    cursor: pointer;
   }
 
   li:hover {
-    box-shadow: 1px 2px 4px 1px rgba(0, 0, 0, 0.2);
-    margin-top: -2px;
-    margin-left: -1px;
+    background-color: #f4f4f4;
   }
 </style>
 
 <script>
-  import { format, distanceInWordsToNow } from 'date-fns'
+  import { format, distanceInWords } from 'date-fns'
   export default {
     components: {
       ClassSessionForm: './ClassSessionForm.html'
@@ -38,7 +37,7 @@
       endsAtLocal: ({ endsAt }) => format(endsAt, 'YYYY-MM-DDTHH:mm'),
       startString: ({ startsAt }) => format(startsAt, 'ddd MMM M HH:mm'),
       endTime: ({ endsAt }) => format(endsAt, 'HH:mm'),
-      distance: ({ startsAt }) => distanceInWordsToNow(startsAt),
+      distance: ({ startsAt, time }) => distanceInWords(startsAt, new Date()),
       group: ({ session, $groups }) => $groups.find(group => group.id === session.studentGroupId)
     }
   }
