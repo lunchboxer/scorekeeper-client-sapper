@@ -1,25 +1,31 @@
-<h3>{edit ? "Edit session": "Add a class session"}</h3>
-<form novalidate ref:form on:submit="handleSubmit(event)">
-  <fieldset>
-    <FancyTextInput type="datetime-local" label="Start date and time" name="startsAtField" bind:value=startsAt required />
-    <FancyTextInput type="datetime-local" label="End date and time" name="endsAtField" bind:value=endsAt required />
+<div class="form-container">
+  <h3>{edit ? "Edit session": "Add a class session"}</h3>
+  <form novalidate ref:form on:submit="handleSubmit(event)">
+    <fieldset>
+      <FancyTextInput type="datetime-local" label="Start date and time" name="startsAtField" bind:value=startsAt
+        required />
+      <FancyTextInput type="datetime-local" label="End date and time" name="endsAtField" bind:value=endsAt required />
 
-    <label for="group-select">Class</label>
-    <select id="group-select" bind:value="group" required>
-      <option value=''></option>
-      {#each $groups as group}
-      <option value={group.id}>{group.name}</option>
-      {/each}
-    </select>
-    <br>
-    <input type="submit" value="Save" class="button" ref:submit />
-    <input type="reset" value="Cancel" class="button button-outline" on:click='set({show:false})' />
-    {#if error}
-    <br>
-    <span class="error">{error}</span>
-    {/if}
-  </fieldset>
-</form>
+      <label for="group-select">Class</label>
+      <select id="group-select" bind:value="group" required>
+        <option value=''></option>
+        {#each $groups as group}
+        <option value={group.id}>{group.name}</option>
+        {/each}
+      </select>
+      <br>
+      <input type="submit" value="Save" class="button" ref:submit />
+      <input type="reset" value="Cancel" class="button button-outline" on:click='set({show:false})' />
+      {#if error}
+      <br>
+      <span class="error">{error}</span>
+      {/if}
+    </fieldset>
+  </form>
+  {#if edit}
+  <DeleteClassSessionButton {id} />
+  {/if}
+</div>
 
 <style>
   select {
@@ -29,6 +35,18 @@
   .error {
     color: red;
   }
+
+  .form-container {
+    max-width: 40rem;
+    padding: 2rem;
+    border: 1px solid #eeeeee;
+  }
+
+  form,
+  fieldset {
+    padding: 0;
+    margin: 0;
+  }
 </style>
 
 <script>
@@ -37,7 +55,8 @@
 
   export default {
     components: {
-      FancyTextInput: './FancyTextInput.html'
+      FancyTextInput: './FancyTextInput.html',
+      DeleteClassSessionButton: './DeleteClassSessionButton.html'
     },
     oncreate() {
       this.refs.form.scrollIntoView({ behavior: 'smooth' })
@@ -47,13 +66,8 @@
         edit: false,
         show: true,
         group: '',
-        error: '',
-        time: new Date()
+        error: ''
       }
-    },
-    computed: {
-      startsAt: ({ time }) => time.toJSON(),
-      endsAt: ({ time }) => time.toJSON(),
     },
     methods: {
       handleSubmit(event) {
@@ -85,10 +99,22 @@
             this.set({ error: error.message })
             this.addMessage("There was a problem adding the session.")
           })
-
       },
       editSession() {
-        this.refs.submit.disabled = false
+        const { startsAt, endsAt, id } = this.get()
+        const group = this.get().group || null
+        client
+          .service("class-sessions")
+          .patch(id, { startsAt, endsAt, studentGroupId: group })
+          .then(() => {
+            this.addMessage("Session edited successfully")
+            this.set({ error: '', show: false })
+          })
+          .catch(error => {
+            this.refs && (this.refs.submit.disabled = false)
+            this.set({ error: error.message })
+            this.addMessage("There was a problem editing the session.")
+          })
       },
       addMessage
     }

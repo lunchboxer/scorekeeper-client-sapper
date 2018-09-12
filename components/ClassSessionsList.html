@@ -2,7 +2,7 @@
 <AddClassSession />
 
 {#if classSessions.length}
-<p>Showing {classSessions.length} class sessions.</p>
+<p>Showing {classSessions.length} class sessions. Click to edit.</p>
 <ul>
   {#each classSessions as session (session.id)}
   <ClassSessionsListItem {session} />

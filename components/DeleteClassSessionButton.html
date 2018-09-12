@@ -1,0 +1,54 @@
+<div class="delete-session">
+  {#if showConfirm}
+  <span class="float-left confirm">Really delete?</span>
+  <span class="float-right">
+    <span on:click="handleDelete()" class="pointy">Yes</span>
+    /
+    <span on:click="set({showConfirm:false})" class="pointy">No</span>
+  </span>
+  {:else}
+  <span on:click='set({showConfirm: true})' class="float-right pointy">&times;&nbsp;Delete session</span>
+  {/if}
+</div>
+
+<style>
+  .confirm {
+    padding: 0;
+    margin: 0;
+    color: darkred;
+  }
+
+  .pointy {
+    cursor: pointer;
+  }
+
+  .delete-session {
+    max-width: 40rem;
+    padding: 1rem 0 2rem 0;
+  }
+</style>
+
+<script>
+  import client from '../utils/feathers.js'
+  import { addMessage } from '../utils/notificationTools.js'
+
+  export default {
+    data() {
+      return {
+        showConfirm: false
+      }
+    },
+    methods: {
+      handleDelete() {
+        const { id } = this.get()
+        client.service("class-sessions").remove(id)
+          .then(this.addMessage("Session successfully deleted"))
+          .catch(err => {
+            console.log(err)
+            this.addMessage("Session could not be deleted")
+          })
+      },
+      addMessage
+    }
+  }
+</script>

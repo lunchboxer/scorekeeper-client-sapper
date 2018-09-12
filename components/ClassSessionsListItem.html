@@ -1,19 +1,44 @@
-<li>{group ? group.name + ' class' : 'No class'},
-  {startsString} - {endsString}</li>
+{#if !edit}
+<li on:click="set({edit:true})">{group ? group.name + ' class' : 'No class'}, In {distance}
+  {startString}-{endTime}</li>
+{:else}
+<ClassSessionForm edit id={session.id} startsAt={startsAtLocal} endsAt={endsAtLocal} group={group ? group.id : '' }
+  bind:show='edit' />
+{/if}
+
+<style>
+  li {
+    /* list-style-type: none; */
+    padding: 1rem 0;
+    margin: 1rem 0;
+  }
+
+  li:hover {
+    box-shadow: 1px 2px 4px 1px rgba(0, 0, 0, 0.2);
+    margin-top: -2px;
+    margin-left: -1px;
+  }
+</style>
 
 <script>
+  import { format, distanceInWordsToNow } from 'date-fns'
   export default {
+    components: {
+      ClassSessionForm: './ClassSessionForm.html'
+    },
+    data() {
+      return {
+        edit: false
+      }
+    },
     computed: {
       startsAt: ({ session }) => session.startsAt,
-      startsString: ({ startsAt }) => {
-        const dateTime = new Date(startsAt)
-        return dateTime.toDateString()
-      },
       endsAt: ({ session }) => session.endsAt,
-      endsString: ({ endsAt }) => {
-        const dateTime = new Date(endsAt)
-        return dateTime.toDateString()
-      },
+      startsAtLocal: ({ startsAt }) => format(startsAt, 'YYYY-MM-DDTHH:mm'),
+      endsAtLocal: ({ endsAt }) => format(endsAt, 'YYYY-MM-DDTHH:mm'),
+      startString: ({ startsAt }) => format(startsAt, 'ddd MMM M HH:mm'),
+      endTime: ({ endsAt }) => format(endsAt, 'HH:mm'),
+      distance: ({ startsAt }) => distanceInWordsToNow(startsAt),
       group: ({ session, $groups }) => $groups.find(group => group.id === session.studentGroupId)
     }
   }
