@@ -8,7 +8,7 @@
 
       <label for="group-select">Class</label>
       <select id="group-select" bind:value="group" required>
-        <option value=''></option>
+        <option value=''>Unassigned</option>
         {#each $groups as group}
         <option value={group.id}>{group.name}</option>
         {/each}
@@ -66,7 +66,10 @@
         edit: false,
         show: true,
         group: '',
-        error: ''
+        error: '',
+        id: null,
+        startsAt: '',
+        endsAt: '',
       }
     },
     methods: {
