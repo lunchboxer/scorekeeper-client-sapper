@@ -113,13 +113,13 @@
         }
       },
       editStudent() {
-        const { chineseName, pinyinName, englishName, gender, birthdate, id } = this.get()
+        const { chineseName, pinyinName, englishName, birthdate, id } = this.get()
         const group = this.get().group || null
+        const gender = this.get().gender || null
         client
           .service("students")
           .update(id, { chineseName, pinyinName, englishName, gender, birthdate, group })
           .then(() => {
-            this.refs.submit.disabled = false
             this.addMessage("Student edited successfully")
             this.set({ error: '', show: false })
           })
@@ -130,7 +130,8 @@
           })
       },
       addStudent() {
-        const { chineseName, pinyinName, englishName, gender, birthdate, groupId } = this.get()
+        const { chineseName, pinyinName, englishName, birthdate, groupId } = this.get()
+        const gender = this.get().gender || null
         client
           .service("students")
           .create({ chineseName, pinyinName, englishName, gender, birthdate, group: groupId })
