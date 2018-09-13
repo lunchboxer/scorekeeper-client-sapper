@@ -1,0 +1,52 @@
+<li>
+  <div class="main"><span class="group">{group ? group.name + ' class' : 'No class'}</span>
+    <span class="distance">{distance}</span>
+  </div>
+  <span class="time">{startString}-{endTime}</span>
+</li>
+
+<style>
+  .main {
+    font-size: 1.8rem;
+  }
+
+  .group {
+    font-size: 2.4rem;
+    color: var(--primary-color);
+    font-weight: 400;
+  }
+
+  .distance {
+    float: right;
+  }
+
+  li {
+    max-width: 40rem;
+    min-width: 30rem;
+    list-style-type: none;
+    padding: 1.6rem;
+    margin: 1rem 0;
+    cursor: pointer;
+    border: 1px solid #eeeeee;
+  }
+
+  li:hover {
+    background-color: #f4f4f4;
+  }
+</style>
+
+<script>
+  import { format, formatDistance } from 'date-fns/esm'
+  export default {
+    computed: {
+      startsAt: ({ session }) => session.startsAt,
+      endsAt: ({ session }) => session.endsAt,
+      startsAtLocal: ({ startsAt }) => format(startsAt, "YYYY-MM-dd'T'HH:mm"),
+      endsAtLocal: ({ endsAt }) => format(endsAt, "YYYY-MM-dd'T'HH:mm"),
+      startString: ({ startsAt }) => format(startsAt, 'eee MMM M, HH:mm'),
+      endTime: ({ endsAt }) => format(endsAt, 'HH:mm'),
+      distance: ({ startsAt, time }) => formatDistance(startsAt, new Date(), { addSuffix: true, includeSeconds: true }),
+      group: ({ session, $groups }) => $groups.find(group => group.id === session.studentGroupId)
+    }
+  }
+</script>
