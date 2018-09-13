@@ -24,18 +24,16 @@
           const sessions = res.data.sort((a, b) => a.startsAt > b.startsAt)
           this.set({ classSessions: sessions })
         })
-      this.groups = client.service('student-groups').watch()
-        .find().subscribe(groups => {
-          const sortedGroups = groups.data.sort((a, b) => a.name > b.name)
-          this.store.set({ groups: sortedGroups })
-        })
+      client.service('student-groups').find().then(groups => {
+        const sortedGroups = groups.data.sort((a, b) => a.name > b.name)
+        this.store.set({ groups: sortedGroups })
+      })
       this.interval = setInterval(() => {
         this.set({ time: new Date() })
       }, 20000);
     },
     ondestroy() {
       this.classSessions.unsubscribe()
-      this.groups.unsubscribe()
       clearInterval(this.interval)
     },
     components: {
