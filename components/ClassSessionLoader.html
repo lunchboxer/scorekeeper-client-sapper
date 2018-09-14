@@ -1,0 +1,50 @@
+{#if session}
+<h2>Class session {session.id}</h2>
+<svelte:component this="{stage}" {session} />
+{:else}
+<h2>No class session found</h2>
+{/if}
+
+<script>
+  import client from '../utils/feathers.js'
+  import { addMessage } from '../utils/notificationTools.js'
+  import ClassSessionActive from './ClassSessionActive.html'
+  import ClassSessionStarted from './ClassSessionStarted.html'
+  import ClassSessionEnded from './ClassSessionEnded.html'
+
+  export default {
+    oncreate() {
+      const { id } = this.get()
+      client.service('class-sessions').watch()
+        .get(id).subscribe(session => {
+          if (session.stage === 'Inactive') {
+            client.service('class-sessions').patch(id, { stage: "Active" })
+            this.addMessage('Activated class session')
+          }
+          this.set({ session })
+        })
+    },
+    data() {
+      return {
+        session: ''
+      }
+    },
+    computed: {
+      stage: ({ session }) => {
+        switch (session.stage) {
+          case 'Active':
+            return ClassSessionActive
+          case 'Started':
+            return ClassSessionStarted
+          case 'Ended':
+            return ClassSessionEnded
+          default:
+            return null
+        }
+      }
+    },
+    methods: {
+      addMessage
+    }
+  }
+</script>

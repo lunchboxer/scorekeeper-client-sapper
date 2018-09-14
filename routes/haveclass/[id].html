@@ -1,0 +1,22 @@
+<svelte:head>
+  <title>Have class</title>
+</svelte:head>
+
+{#if $login}
+<ClassSessionLoader {id} />
+{:else}
+<h2>Not authorized</h2>
+<p>You must log in to access class sessions.</p>
+{/if}
+
+<script>
+  export default {
+    components: {
+      ClassSessionLoader: "../../components/ClassSessionLoader.html"
+    },
+    preload({ params, query }) {
+      const { id } = params;
+      return { id }
+    }
+  }
+</script>

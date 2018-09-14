@@ -1,0 +1,28 @@
+<h2>Class Session Active</h2>
+<p>Class {distanceString}</p>
+
+<script>
+  import { getRelativeClassTime } from '../utils/functions.js'
+
+  export default {
+    oncreate() {
+      // load students from session.studentGroupId
+      // load attendances for this class session
+      this.interval = setInterval(() => {
+        this.set({ time: new Date() })
+      }, 2000);
+    },
+    ondestroy() {
+      clearInterval(this.interval)
+    },
+    data() {
+      return {
+        time: new Date()
+      }
+    },
+    computed: {
+      group: ({ session, $groups }) => $groups.find(group => group.id === session.studentGroupId),
+      distanceString: ({ session, time }) => getRelativeClassTime(session.startsAt, session.endsAt, time)
+    }
+  }
+</script>

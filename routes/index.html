@@ -2,12 +2,13 @@
   <title>Home</title>
 </svelte:head>
 
-<h1>Welcome to {$APPNAME}</h1>
-
 {#if !$login}
+<h1>Welcome to {$APPNAME}</h1>
 <p>You'll need to log in to do anything interesting.</p>
 {:else}
+<h1>{$APPNAME} Dashboard</h1>
 <ClassSessionsPicker />
+<!-- then show next few upcoming classes with same component to use in scheduling route -->
 {/if}
 
 <script>
