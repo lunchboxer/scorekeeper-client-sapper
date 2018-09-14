@@ -6,7 +6,14 @@ const store = new Store({
   notifications: {},
   user: null,
   login: null,
-  groups: []
+  groups: [],
+  session: {},
+  attendances: [],
+  activeStudents: []
+})
+
+store.compute('activeGroup', ['session', 'groups'], (session, groups) => {
+  return groups.find(group => group.id === session.studentGroupId)
 })
 
 export default store

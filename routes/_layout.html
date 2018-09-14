@@ -32,6 +32,8 @@
     },
     store: () => store,
     oncreate() {
+      // for debugging purposes
+      window.store = store
       client.authenticate().catch(store.set({ user: null, login: null }))
       client.on('authenticated', this.authenticatedListener)
       client.on('logout', this.logoutListener)

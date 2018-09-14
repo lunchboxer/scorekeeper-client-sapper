@@ -1,0 +1,13 @@
+<h3>Attendance</h3>
+
+{#each $activeStudents as student (student.id)}
+<AttendanceRow {student} />
+{/each}
+
+<script>
+  export default {
+    components: {
+      AttendanceRow: './AttendanceRow.html'
+    }
+  }
+</script>

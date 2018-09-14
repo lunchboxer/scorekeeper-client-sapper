@@ -1,13 +1,39 @@
-<h2>Class Session Active</h2>
-<p>Class {distanceString}</p>
+{#if $activeGroup.id}
+<h2>{$activeGroup.name} Class Session Active</h2>
+<p class:late="$session.startsAt < time.toJSON()">Scheduled start time: {distance}</p>
+
+{#if !$activeStudents.length}
+<p>There are no students in this class. <a href="students">Add some</a>.</p>
+{:else}
+<button>Start class</button>
+<AttendanceForm />
+{/if}
+
+{/if}
+
+<style>
+  .late {
+    color: red;
+  }
+</style>
 
 <script>
-  import { getRelativeClassTime } from '../utils/functions.js'
+  import { formatDistanceStrict } from 'date-fns/esm'
+  import client from '../utils/feathers.js'
 
   export default {
+    components: {
+      AttendanceForm: './AttendanceForm.html'
+    },
     oncreate() {
-      // load students from session.studentGroupId
-      // load attendances for this class session
+      const { session } = this.store.get()
+      // we can add and remove students to the class at this stage,
+      // but we don't want student dissapearing in the middle of class
+      // so only subscribe and make changes here in Active stage
+      const students = client.service('students').watch()
+        .find({ query: { group: session.studentGroupId } })
+        .subscribe(res => this.store.set({ activeStudents: res.data }))
+      this.on('destroy', students.unsubscribe)
       this.interval = setInterval(() => {
         this.set({ time: new Date() })
       }, 2000);
@@ -17,12 +43,11 @@
     },
     data() {
       return {
-        time: new Date()
+        time: new Date(),
       }
     },
     computed: {
-      group: ({ session, $groups }) => $groups.find(group => group.id === session.studentGroupId),
-      distanceString: ({ session, time }) => getRelativeClassTime(session.startsAt, session.endsAt, time)
+      distance: ({ $session, time }) => formatDistanceStrict($session.startsAt, new Date(), { addSuffix: true, includeSeconds: true })
     }
   }
 </script>
