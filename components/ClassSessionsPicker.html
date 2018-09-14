@@ -3,6 +3,8 @@
 {#each filteredSessions as session (session.id)}
 <ClassSessionsPickerItem {session} {time} />
 {/each}
+{:else}
+<h3>No lessons scheduled within 15 minutes from now.</h3>
 {/if}
 
 <script>
@@ -46,7 +48,8 @@
     data() {
       return {
         time: new Date(),
-        sessions: []
+        sessions: [],
+        filteredSessions: []
       }
     },
     computed: {
@@ -61,7 +64,7 @@
         const minutes = time.getMinutes()
         later.setMinutes(minutes + 15)
         return later
-      },  //todo,
+      },
       filteredSessions: ({ sessions, earlier, later }) => {
         return sessions.filter(session => {
           const startsDate = new Date(session.startsAt)
