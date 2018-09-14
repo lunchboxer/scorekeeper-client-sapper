@@ -4,7 +4,6 @@
 <h2>No class session found</h2>
 {/if}
 
-
 <script>
   import client from '../utils/feathers.js'
   import { addMessage } from '../utils/notificationTools.js'
@@ -13,8 +12,16 @@
   import ClassSessionEnded from './ClassSessionEnded.html'
 
   export default {
+    preload({ params, query }) {
+      const { id } = params;
+      return { id }
+    },
     oncreate() {
       const { id } = this.get()
+      const attendances = client.service('attendances').watch()
+        .find({ query: { session: 21 } })
+        .subscribe(res => this.store.set({ attendances: res.data }))
+      this.on('destroy', attendances.unsubscribe)
       this.sessions = client.service('class-sessions').watch()
         .get(id).subscribe(session => {
           if (session.stage === 'Inactive') {
@@ -23,18 +30,9 @@
           }
           this.store.set({ session, activeGroupId: session.studentGroupId })
         })
-      this.attendances = client.service('attendances').watch()
-        .find({ query: { classSessionId: id } })
-        .subscribe(res => this.store.set({ attendances: res.data }))
     },
     ondestroy() {
       this.sessions.unsubscribe()
-      this.attendances.unsubscribe()
-    },
-    data() {
-      return {
-        attendances: []
-      }
     },
     computed: {
       stage: ({ $session }) => {

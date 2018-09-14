@@ -1,1 +1,37 @@
-<p>{student.englishName || student.chineseName}</p>
+<li on:click="changeStatus()">{student.englishName || student.chineseName} {status}</li>
+
+<style>
+  li {
+    padding: 1rem;
+    margin: 1rem;
+    border: 1px solid #eeeeee;
+    cursor: pointer;
+  }
+
+  li:hover {
+    background-color: #eeeeee
+  }
+</style>
+<script>
+  import client from '../utils/feathers.js'
+  export default {
+    computed: {
+      attendance: ({ $attendances, student }) => $attendances.find(attendance => attendance.student === student.id),
+      status: ({ attendance }) => {
+        return attendance ? attendance.status : 'none'
+      }
+    },
+    methods: {
+      changeStatus() {
+        const { attendance, status, student } = this.get()
+        const { session } = this.store.get()
+        if (status === 'none') {
+          client.service('attendances').create({ status: "present", student: student.id, session: session.id })
+        } else {
+          const newStatus = (status === "present") ? "absent" : "present"
+          client.service('attendances').patch(attendance.id, { status: newStatus })
+        }
+      }
+    }
+  }
+</script>
