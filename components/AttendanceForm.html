@@ -1,5 +1,6 @@
 <h3>Attendance</h3>
 
+<p>{numPresent} out of {$attendances.length} students present.</p>
 {#each $activeStudents as student (student.id)}
 <AttendanceRow {student} />
 {/each}
@@ -8,6 +9,12 @@
   export default {
     components: {
       AttendanceRow: './AttendanceRow.html'
+    },
+    computed: {
+      numPresent: ({ $attendances }) => {
+        const present = $attendances.filter(attendance => attendance.status === 'present')
+        return present.length
+      }
     }
   }
 </script>
