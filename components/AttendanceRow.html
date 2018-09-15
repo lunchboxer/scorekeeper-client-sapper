@@ -1,38 +1,38 @@
-<li class:present="status ==='present'" on:click="changeStatus()">
-  <span class="check">&#10004;</span>
-  <span class="name">{student.englishName || student.chineseName}</span>
-</li>
+<div class:present="status ==='present'" on:click="changeStatus()">
+  <i class="check material-icons">{status === 'present' ? "check_box" : "check_box_outline_blank"}</i><span class="name">{student.englishName
+    || student.chineseName}</span>
+</div>
 
 <style>
-  li {
+  div {
     list-style-type: none;
-    padding: 1rem;
     margin: 1rem 0;
-    border: 1px solid #eeeeee;
+    padding: 1rem;
     cursor: pointer;
     color: grey;
     max-width: 50rem;
   }
 
-  li:hover {
+  div:hover {
     color: var(--base-color);
+    background-color: #f9f9f9;
   }
 
   .check {
-    font-size: 2.5rem;
+    position: relative;
     padding: 0.4rem;
     margin: 0.4rem;
-    visibility: hidden;
   }
 
-  li.present {
+  .name {
+    position: relative;
+    top: -6px;
+  }
+
+  div.present {
     color: var(--primary-color);
     font-weight: 400;
-    border: 1px solid var(--primary-color);
-  }
-
-  li.present .check {
-    visibility: visible;
+    /* border: 1px solid var(--primary-color); */
   }
 </style>
 
