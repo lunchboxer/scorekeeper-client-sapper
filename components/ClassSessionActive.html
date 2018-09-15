@@ -5,7 +5,7 @@
 {#if !$activeStudents.length}
 <p>There are no students in this class. <a href="students">Add some</a>.</p>
 {:else}
-<button>Start class</button>
+<button on:click="startClass($session.id)">Start class</button>
 <AttendanceForm />
 {/if}
 
@@ -48,6 +48,20 @@
     },
     computed: {
       distance: ({ $session, time }) => formatDistanceStrict($session.startsAt, new Date(), { addSuffix: true, includeSeconds: true })
+    },
+    methods: {
+      startClass(id) {
+        // mark others absent
+        const { activeStudents, attendances, session } = this.store.get()
+        const unmarkedStudents = activeStudents.filter(student => {
+          return !attendances.find(attendance => attendance.student === student.id)
+        })
+        const newRecords = unmarkedStudents.map(student => {
+          return { student: student.id, session: session.id, status: "absent" }
+        })
+        client.service("attendances").create(newRecords)
+        client.service('class-sessions').patch(id, { stage: "Started" })
+      }
     }
   }
 </script>
