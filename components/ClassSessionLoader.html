@@ -12,16 +12,17 @@
   import ClassSessionEnded from './ClassSessionEnded.html'
 
   export default {
-    preload({ params, query }) {
-      const { id } = params;
-      return { id }
-    },
     oncreate() {
-      const { id } = this.get()
+      const { session } = this.store.get()
+      const { id } = session
       const attendances = client.service('attendances').watch()
-        .find({ query: { session: 21 } })
-        .subscribe(res => this.store.set({ attendances: res.data }))
+        .find({ query: { session: id } })
+        .subscribe(res => {
+          console.log(res.data)
+          this.store.set({ attendances: res.data })
+        })
       this.on('destroy', attendances.unsubscribe)
+
       this.sessions = client.service('class-sessions').watch()
         .get(id).subscribe(session => {
           if (session.stage === 'Inactive') {

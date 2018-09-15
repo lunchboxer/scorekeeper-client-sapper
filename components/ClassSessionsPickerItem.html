@@ -1,11 +1,10 @@
-<a href="haveclass/{session.id}">
-  <li>
-    <div class="main"><span class="group">{group ? group.name + ' class' : 'No class'}</span>
-      <span class="distance">{distance}</span>
-    </div>
-    <span class="time">{startString}-{endTime}</span>
-  </li>
-</a>
+<li on:click="pickSession(session)">
+  <div class="main"><span class="group">{group ? group.name + ' class' : 'No class'}</span>
+    <span class="distance">{distance}</span>
+  </div>
+  <span class="time">{startString}-{endTime}</span>
+</li>
+
 
 <style>
   .main {
@@ -40,6 +39,7 @@
 <script>
   import { format } from 'date-fns/esm'
   import { getRelativeClassTime } from '../utils/functions.js'
+  import { goto } from 'sapper/runtime.js'
 
   export default {
     computed: {
@@ -51,6 +51,12 @@
       endTime: ({ endsAt }) => format(endsAt, 'HH:mm'),
       distance: ({ session, time }) => getRelativeClassTime(session.startsAt, session.endsAt, time),
       group: ({ session, $groups }) => $groups.find(group => group.id === session.studentGroupId)
+    },
+    methods: {
+      pickSession(session) {
+        this.store.set({ session })
+        goto('haveclass')
+      }
     }
   }
 </script>
