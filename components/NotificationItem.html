@@ -1,5 +1,4 @@
-<span class="notification-message">
-  {message}</span>
+<span class="notification-message">{message}</span>
 <span class="notification-close" on:click="removeMessage(id)">&times;</span>
 
 
@@ -7,6 +6,8 @@
   .notification-message {
     padding: 1rem;
     float: left;
+    position: relative;
+    top: 3px;
   }
 
   .notification-close {
@@ -15,6 +16,7 @@
     font-size: 120%;
     float: right;
     color: var(--base-color);
+    cursor: pointer;
   }
 </style>
 

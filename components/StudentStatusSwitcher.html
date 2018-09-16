@@ -1,0 +1,34 @@
+<select bind:value="status" on:click="setStatus(status)">
+  <option value="present">Present</option>
+  <option value="absent">Absent</option>
+  <option value="late">Late</option>
+  <option value="leftEarly">Left early</option>
+  <option value="lateLeftEarly">Late & left early</option>
+</select>
+
+<style>
+  select {
+    position: relative;
+    top: 6px;
+    width: auto;
+    color: inherit;
+    border: none;
+    font-weight: inherit;
+  }
+
+  option {
+    font-weight: inherit;
+  }
+</style>
+
+<script>
+  import client from '../utils/feathers.js'
+  export default {
+    methods: {
+      setStatus(status) {
+        const { attendance } = this.get()
+        client.service('attendances').patch(attendance.id, { status })
+      }
+    }
+  }
+</script>

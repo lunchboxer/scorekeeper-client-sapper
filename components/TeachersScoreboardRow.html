@@ -1,0 +1,101 @@
+<tr class="points-row" class:here="isHere">
+  <td>
+    {student.englishName || student.chineseName + '(' + student.pinyinName + ')'}
+  </td>
+  <td>
+    <StudentStatusSwitcher {status} {attendance} />
+  </td>
+  <td class="buttons">
+    {#if isHere}
+    {pointsTally}
+    <button on:click="addPoint(event, 1)"><i class="material-icons add">add_circle</i></button>
+    <button on:click="addPoint(event, -1)" disabled={pointsTally===0}><i class="material-icons remove">remove_circle</i></button>
+    {/if}
+  </td>
+</tr>
+
+<style>
+  button {
+    position: relative;
+    top: 6px;
+    background: inherit;
+    margin: 0;
+    padding: 0;
+    width: auto;
+    height: auto;
+    border: none;
+  }
+
+  button:hover {
+    background: inherit;
+  }
+
+  tr {
+    font-size: 2rem;
+    margin: 1rem 0;
+    padding: 0.5rem;
+    color: #bbbbbb;
+    max-width: 50rem;
+  }
+
+  i {
+    font-size: 4rem;
+  }
+
+  i.add {
+    color: green;
+  }
+
+  i.remove {
+    color: red;
+  }
+
+  tr.here {
+    color: var(--pirmary-color);
+  }
+</style>
+
+<script>
+  import client from '../utils/feathers.js'
+  export default {
+    data() {
+      return {
+        points: []
+      }
+    },
+    components: {
+      StudentStatusSwitcher: './StudentStatusSwitcher.html'
+    },
+    oncreate() {
+      const { student } = this.get()
+      const { session } = this.store.get()
+      this.points = client.service("points").watch()
+        .find({ query: { studentId: student.id, classSessionId: session.id } })
+        .subscribe(res => {
+          console.log(res.data)
+          this.set({ points: res.data })
+        })
+    },
+    ondestroy() {
+      this.points.unsubscribe()
+    },
+    computed: {
+      attendance: ({ $attendances, student }) => $attendances.find(attendance => attendance.student === student.id),
+      status: ({ attendance }) => attendance ? attendance.status : '',
+      isHere: ({ status }) => ['present', 'late'].includes(status),
+      pointsTally: ({ points }) => !points.length
+        ? 0
+        // : console.log(points)
+        : points.reduce(((tally, point) => tally + point.value), 0)
+    },
+    methods: {
+      addPoint(event, value) {
+        event.preventDefault()
+        console.log('add it')
+        const { student, pointsTally } = this.get()
+        const { session } = this.store.get()
+        client.service("points").create({ value, studentId: student.id, classSessionId: session.id })
+      }
+    }
+  }
+</script>

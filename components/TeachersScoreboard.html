@@ -1,0 +1,24 @@
+<p>Click a student to add points or change attendance status.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Attendance</th>
+      <th>Points</th>
+    </tr>
+  </thead>
+  <tbody>
+    {#each $activeStudents as student (student.id)}
+    <TeachersScoreboardRow {student} />
+    {/each}
+  </tbody>
+</table>
+
+<script>
+  export default {
+    components: {
+      TeachersScoreboardRow: './TeachersScoreboardRow.html'
+    }
+  }
+</script>

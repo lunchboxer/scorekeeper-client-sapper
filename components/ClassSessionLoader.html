@@ -17,10 +17,7 @@
       const { id } = session
       const attendances = client.service('attendances').watch()
         .find({ query: { session: id } })
-        .subscribe(res => {
-          console.log(res.data)
-          this.store.set({ attendances: res.data })
-        })
+        .subscribe(res => this.store.set({ attendances: res.data }))
       this.on('destroy', attendances.unsubscribe)
 
       this.sessions = client.service('class-sessions').watch()

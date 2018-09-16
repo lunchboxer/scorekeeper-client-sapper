@@ -1,1 +1,19 @@
-<h2>Class Session Started</h2>
+<h2>{$activeGroup.name} Class Session Started</h2>
+
+<TeachersScoreboard />
+
+<script>
+  import client from '../utils/feathers.js'
+
+  export default {
+    components: {
+      TeachersScoreboard: './TeachersScoreboard.html'
+    },
+    oncreate() {
+      const { session } = this.store.get()
+      client.service('students')
+        .find({ query: { group: session.studentGroupId } })
+        .then(res => this.store.set({ activeStudents: res.data }))
+    }
+  }
+</script>
