@@ -15,11 +15,9 @@
     oncreate() {
       const { session } = this.store.get()
       const { id } = session
-      const attendances = client.service('attendances').watch()
+      this.attendances = client.service('attendances').watch()
         .find({ query: { session: id } })
         .subscribe(res => this.store.set({ attendances: res.data }))
-      this.on('destroy', attendances.unsubscribe)
-
       this.sessions = client.service('class-sessions').watch()
         .get(id).subscribe(session => {
           if (session.stage === 'Inactive') {
@@ -31,6 +29,7 @@
     },
     ondestroy() {
       this.sessions.unsubscribe()
+      this.attendances.unsubscribe()
     },
     computed: {
       stage: ({ $session }) => {

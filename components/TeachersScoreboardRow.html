@@ -71,10 +71,7 @@
       const { session } = this.store.get()
       this.points = client.service("points").watch()
         .find({ query: { studentId: student.id, classSessionId: session.id } })
-        .subscribe(res => {
-          console.log(res.data)
-          this.set({ points: res.data })
-        })
+        .subscribe(res => this.set({ points: res.data }))
     },
     ondestroy() {
       this.points.unsubscribe()
@@ -91,7 +88,6 @@
     methods: {
       addPoint(event, value) {
         event.preventDefault()
-        console.log('add it')
         const { student, pointsTally } = this.get()
         const { session } = this.store.get()
         client.service("points").create({ value, studentId: student.id, classSessionId: session.id })

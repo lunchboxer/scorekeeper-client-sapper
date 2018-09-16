@@ -49,10 +49,12 @@
         const { attendance, status, student } = this.get()
         const { session } = this.store.get()
         if (status === 'none') {
-          client.service('attendances').create({ status: "present", student: student.id, session: session.id })
+          const now = new Date()
+          client.service('attendances').create({ status: "present", student: student.id, session: session.id, arrivedAt: now })
         } else {
           const newStatus = (status === "present") ? "absent" : "present"
-          client.service('attendances').patch(attendance.id, { status: newStatus })
+          const arrivedAt = (newStatus === "present") ? new Date() : null
+          client.service('attendances').patch(attendance.id, { status: newStatus, arrivedAt })
         }
       }
     }
