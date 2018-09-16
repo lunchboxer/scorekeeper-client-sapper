@@ -26,8 +26,9 @@
   export default {
     methods: {
       setStatus(status) {
+        const arrivedAt = (status !== 'absent') ? new Date() : null
         const { attendance } = this.get()
-        client.service('attendances').patch(attendance.id, { status })
+        client.service('attendances').patch(attendance.id, { status, arrivedAt })
       }
     }
   }
