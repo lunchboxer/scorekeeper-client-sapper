@@ -59,7 +59,7 @@
         const newRecords = unmarkedStudents.map(student => {
           return { student: student.id, session: session.id, status: "absent" }
         })
-        client.service("attendances").create(newRecords)
+        newRecords.forEach(record => client.service("attendances").create(record))
         client.service('class-sessions').patch(id, { stage: "Started" })
       }
     }
