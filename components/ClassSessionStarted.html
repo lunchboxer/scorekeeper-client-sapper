@@ -1,4 +1,4 @@
-<h3>{$activeGroup.name} Class Session Started</h3>
+<h3>{$activeGroup.name} class ends in {endsString}</h3>
 
 {#if presentStudents.length}
 <div class="scoreboard">
@@ -28,8 +28,14 @@
 
 <script>
   import client from '../utils/feathers.js'
+  import { formatDistance } from 'date-fns/esm'
 
   export default {
+    data() {
+      return {
+        time: new Date()
+      }
+    },
     components: {
       TeachersScoreboard: './TeachersScoreboard.html',
       AttendanceRow: './AttendanceRow.html'
@@ -39,6 +45,12 @@
       client.service('students')
         .find({ query: { group: session.studentGroupId } })
         .then(res => this.store.set({ activeStudents: res.data }))
+      this.interval = setInterval(() => {
+        this.set({ time: new Date() })
+      }, 20000);
+    },
+    ondestroy() {
+      clearInterval(this.interval)
     },
     computed: {
       absentStudents: ({ $activeStudents, $attendances }) => {
@@ -52,7 +64,8 @@
           const myattendance = $attendances.find(attendance => attendance.student === student.id)
           return myattendance && ['present', 'late'].includes(myattendance.status)
         })
-      }
+      },
+      endsString: ({ $session, time }) => formatDistance($session.endsAt, time)
     }
   }
 </script>
