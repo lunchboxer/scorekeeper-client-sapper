@@ -1,5 +1,5 @@
 <svelte:head>
-  <title>Home</title>
+  <title>{$APPNAME} - Dashboard</title>
 </svelte:head>
 
 {#if !$login}
@@ -7,7 +7,7 @@
 {:elseif $session.id}
 <ClassSessionLoader id={$session.id} />
 {:else}
-<h1>{$APPNAME} Dashboard</h1>
+<h1>Dashboard</h1>
 <ClassSessionsPicker />
 <!-- then show next few upcoming classes with same component to use in scheduling route -->
 {/if}
