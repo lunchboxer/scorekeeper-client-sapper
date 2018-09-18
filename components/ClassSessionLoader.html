@@ -25,8 +25,7 @@
       this.sessions = client.service('class-sessions').watch()
         .get(id).subscribe(session => {
           if (session.stage === 'Inactive') {
-            client.service('class-sessions').patch(id, { stage: "Active" })
-            this.addMessage('Activated class session')
+            this.activateSession(id)
           }
           this.store.set({ session, activeGroupId: session.studentGroupId })
         })
@@ -50,6 +49,15 @@
       }
     },
     methods: {
+      async activateSession(id) {
+        // there can be only one active session
+        await client.service('class-sessions')
+          .patch(null, { stage: "Inactive" }, { query: { stage: "Active" } })
+        await client.service('class-sessions')
+          .patch(null, { stage: "Ended" }, { query: { stage: "Started" } })
+        client.service('class-sessions').patch(id, { stage: "Active" })
+        this.addMessage('Activated class session')
+      },
       addMessage
     }
   }
