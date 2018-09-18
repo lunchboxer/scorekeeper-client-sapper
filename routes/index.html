@@ -3,8 +3,7 @@
 </svelte:head>
 
 {#if !$login}
-<h1>Welcome to {$APPNAME}</h1>
-<p>You'll need to <a href="login">log in</a> to do anything interesting.</p>
+<About />
 {:elseif $session.id}
 <ClassSessionLoader id={$session.id} />
 {:else}
@@ -17,7 +16,8 @@
   export default {
     components: {
       ClassSessionsPicker: "../components/ClassSessionsPicker.html",
-      ClassSessionLoader: "../components/ClassSessionLoader.html"
+      ClassSessionLoader: "../components/ClassSessionLoader.html",
+      About: "../components/About.html"
     }
   }
 </script>
