@@ -2,14 +2,14 @@
 
 <span class="tally">{leftpad(pointsTally)}</span>
 
-<button on:click="addPoint(event, -1)" disabled={pointsTally===0}>-</button>
+<button on:click="addPoint(event, -1)" disabled={pointsTally===0}>&minus;</button>
 
 
 <style>
   .tally {
     padding: 0.5rem;
     margin: 0;
-    font-size: 3.5rem;
+    font-size: 3rem;
     color: var(--primary-color);
     font-weight: 400;
   }
@@ -21,7 +21,7 @@
     padding: 1rem;
     width: auto;
     height: auto;
-    font-size: 3.5rem;
+    font-size: 3rem;
     color: var(--base-color);
     border: none;
     height: 100%;
