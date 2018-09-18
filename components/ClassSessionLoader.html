@@ -15,6 +15,10 @@
     oncreate() {
       const { session } = this.store.get()
       const { id } = session
+      if (!id) {
+        this.store.set({ session: {} })
+        this.addMessage('Error: Session not found')
+      }
       this.attendances = client.service('attendances').watch()
         .find({ query: { session: id } })
         .subscribe(res => this.store.set({ attendances: res.data }))

@@ -1,4 +1,4 @@
-<div class:present="status ==='present'" on:click="changeStatus()">
+<div class:present="status ==='present'" on:click="changeStatus(event)">
   <i class="check material-icons">{status === 'present' ? "check_box" : "check_box_outline_blank"}</i><span class="name">{student.englishName
     || student.chineseName}</span>
 </div>
@@ -10,6 +10,7 @@
     cursor: pointer;
     color: grey;
     max-width: 50rem;
+    font-size: 2.6rem;
   }
 
   div:hover {
@@ -25,7 +26,7 @@
 
   .name {
     position: relative;
-    top: -6px;
+    top: -3px;
   }
 
   div.present {
@@ -38,6 +39,11 @@
 <script>
   import client from '../utils/feathers.js'
   export default {
+    data() {
+      return {
+        started: false
+      }
+    },
     computed: {
       attendance: ({ $attendances, student }) => $attendances.find(attendance => attendance.student === student.id),
       status: ({ attendance }) => {
@@ -45,14 +51,16 @@
       }
     },
     methods: {
-      changeStatus() {
-        const { attendance, status, student } = this.get()
+      changeStatus(event) {
+        event.preventDefault()
+        const { attendance, status, student, started } = this.get()
         const { session } = this.store.get()
         if (status === 'none') {
           const now = new Date()
           client.service('attendances').create({ status: "present", student: student.id, session: session.id, arrivedAt: now })
         } else {
-          const newStatus = (status === "present") ? "absent" : "present"
+          const newStatus = (status === "present") ? "absent"
+            : (started === true) ? 'late' : "present"
           const arrivedAt = (newStatus === "present") ? new Date() : null
           client.service('attendances').patch(attendance.id, { status: newStatus, arrivedAt })
         }

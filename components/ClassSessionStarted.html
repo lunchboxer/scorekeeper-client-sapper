@@ -1,19 +1,58 @@
-<h2>{$activeGroup.name} Class Session Started</h2>
+<h3>{$activeGroup.name} Class Session Started</h3>
 
-<TeachersScoreboard />
+{#if presentStudents.length}
+<div class="scoreboard">
+  <TeachersScoreboard students={presentStudents} />
+</div>
+{/if}
+
+{#if absentStudents.length}
+<div class="absentlist">
+  <h3>Absent students</h3>
+  {#each absentStudents as student (student.id)}
+  <AttendanceRow {student} />
+  {/each}
+</div>
+{/if}
+
+<style>
+  .scoreboard {
+    margin-bottom: 1rem;
+    padding-bottom: 1rem;
+  }
+
+  .absentlist {
+    margin-top: 1rem;
+  }
+</style>
 
 <script>
   import client from '../utils/feathers.js'
 
   export default {
     components: {
-      TeachersScoreboard: './TeachersScoreboard.html'
+      TeachersScoreboard: './TeachersScoreboard.html',
+      AttendanceRow: './AttendanceRow.html'
     },
     oncreate() {
       const { session } = this.store.get()
       client.service('students')
         .find({ query: { group: session.studentGroupId } })
         .then(res => this.store.set({ activeStudents: res.data }))
+    },
+    computed: {
+      absentStudents: ({ $activeStudents, $attendances }) => {
+        return $activeStudents.filter(student => {
+          const myattendance = $attendances.find(attendance => attendance.student === student.id)
+          return myattendance && ['absent', 'lateLeftEarly', 'leftEarly'].includes(myattendance.status)
+        })
+      },
+      presentStudents: ({ $activeStudents, $attendances }) => {
+        return $activeStudents.filter(student => {
+          const myattendance = $attendances.find(attendance => attendance.student === student.id)
+          return myattendance && ['present', 'late'].includes(myattendance.status)
+        })
+      }
     }
   }
 </script>

@@ -1,97 +1,42 @@
-<tr class="points-row" class:here="isHere">
-  <td>
+<div class="points-row">
+  <div class="pointsWrapper">
+    <PointsPanel student={student.id} />
+  </div>
+
+  <div class="name">
     {student.englishName || student.chineseName + '(' + student.pinyinName + ')'}
-  </td>
-  <td>
+  </div>
+
+  <!-- <div>
     <StudentStatusSwitcher {status} {attendance} />
-  </td>
-  <td class="buttons">
-    {#if isHere}
-    {pointsTally}
-    <button on:click="addPoint(event, 1)"><i class="material-icons add">add_circle</i></button>
-    <button on:click="addPoint(event, -1)" disabled={pointsTally===0}><i class="material-icons remove">remove_circle</i></button>
-    {/if}
-  </td>
-</tr>
+  </div> -->
+</div>
 
 <style>
-  button {
-    position: relative;
-    top: 6px;
-    background: inherit;
-    margin: 0;
-    padding: 0;
-    width: auto;
-    height: auto;
-    border: none;
+  div.points-row {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    text-align: left;
+    align-items: center;
+    /* justify-content: space-between; */
   }
 
-  button:hover {
-    background: inherit;
+  div.pointsWrapper {
+    order: -1;
   }
 
-  tr {
-    font-size: 2rem;
-    margin: 1rem 0;
-    padding: 0.5rem;
-    color: #bbbbbb;
-    max-width: 50rem;
-  }
-
-  i {
-    font-size: 4rem;
-  }
-
-  i.add {
-    color: green;
-  }
-
-  i.remove {
-    color: red;
-  }
-
-  tr.here {
-    color: var(--pirmary-color);
+  div.name {
+    font-size: 3rem;
+    padding: 0 1rem;
   }
 </style>
 
 <script>
-  import client from '../utils/feathers.js'
   export default {
-    data() {
-      return {
-        points: []
-      }
-    },
     components: {
-      StudentStatusSwitcher: './StudentStatusSwitcher.html'
-    },
-    oncreate() {
-      const { student } = this.get()
-      const { session } = this.store.get()
-      this.points = client.service("points").watch()
-        .find({ query: { studentId: student.id, classSessionId: session.id } })
-        .subscribe(res => this.set({ points: res.data }))
-    },
-    ondestroy() {
-      this.points.unsubscribe()
-    },
-    computed: {
-      attendance: ({ $attendances, student }) => $attendances.find(attendance => attendance.student === student.id),
-      status: ({ attendance }) => attendance ? attendance.status : '',
-      isHere: ({ status }) => ['present', 'late'].includes(status),
-      pointsTally: ({ points }) => !points.length
-        ? 0
-        // : console.log(points)
-        : points.reduce(((tally, point) => tally + point.value), 0)
-    },
-    methods: {
-      addPoint(event, value) {
-        event.preventDefault()
-        const { student, pointsTally } = this.get()
-        const { session } = this.store.get()
-        client.service("points").create({ value, studentId: student.id, classSessionId: session.id })
-      }
+      StudentStatusSwitcher: './StudentStatusSwitcher.html',
+      PointsPanel: './PointsPanel.html'
     }
   }
 </script>

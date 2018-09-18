@@ -39,7 +39,6 @@
 <script>
   import { format } from 'date-fns/esm'
   import { getRelativeClassTime } from '../utils/functions.js'
-  import { goto } from 'sapper/runtime.js'
 
   export default {
     computed: {
@@ -55,7 +54,6 @@
     methods: {
       pickSession(session) {
         this.store.set({ session })
-        goto('haveclass')
       }
     }
   }

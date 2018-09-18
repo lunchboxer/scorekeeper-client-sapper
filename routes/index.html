@@ -4,7 +4,9 @@
 
 {#if !$login}
 <h1>Welcome to {$APPNAME}</h1>
-<p>You'll need to log in to do anything interesting.</p>
+<p>You'll need to <a href="login">log in</a> to do anything interesting.</p>
+{:elseif $session.id}
+<ClassSessionLoader id={$session.id} />
 {:else}
 <h1>{$APPNAME} Dashboard</h1>
 <ClassSessionsPicker />
@@ -14,7 +16,8 @@
 <script>
   export default {
     components: {
-      ClassSessionsPicker: "../components/ClassSessionsPicker.html"
+      ClassSessionsPicker: "../components/ClassSessionsPicker.html",
+      ClassSessionLoader: "../components/ClassSessionLoader.html"
     }
   }
 </script>
