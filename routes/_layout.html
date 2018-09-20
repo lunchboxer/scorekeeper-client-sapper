@@ -4,9 +4,6 @@
     <svelte:component this={child.component} {...child.props} />
   </main>
 
-  <!-- <footer>
-    <p>Created in 2018 by James Smith.</p>
-  </footer> -->
 </div>
 <NotificationList></NotificationList>
 
@@ -14,10 +11,6 @@
 <style>
   .container {
     margin-top: 1rem;
-  }
-
-  footer {
-    font-size: 75%;
   }
 </style>
 
@@ -33,7 +26,7 @@
     store: () => store,
     oncreate() {
       // for debugging purposes
-      window.store = store
+      // window.store = store
       client.authenticate().catch(store.set({ user: null, login: null }))
       client.on('authenticated', this.authenticatedListener)
       client.on('logout', this.logoutListener)
