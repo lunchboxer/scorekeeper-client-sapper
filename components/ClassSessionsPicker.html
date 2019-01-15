@@ -4,7 +4,7 @@
 <ClassSessionsPickerItem {session} {time} />
 {/each}
 {:else}
-<h3>No lessons scheduled within 15 minutes from now.</h3>
+<h3>No lessons scheduled soon.</h3>
 {/if}
 
 <script>
@@ -21,7 +21,7 @@
       const later = new Date()
       const minutes = now.getMinutes()
       const hours = now.getHours()
-      earlier.setMinutes(minutes - 15)
+      earlier.setMinutes(minutes - 30)
       later.setHours(hours + 24)
       this.classSessions = client.service('class-sessions').watch()
         .find({

@@ -1,4 +1,4 @@
-<h3>{$activeGroup.name} class ends in {endsString}</h3>
+<h3 class:late="$session.endsAt < time.toJSON()">{$activeGroup.name} class ends {endsString}</h3>
 
 {#if presentStudents.length}
 <div class="scoreboard">
@@ -16,6 +16,9 @@
 {/if}
 
 <style>
+  .late {
+    color: red;
+  }
   .scoreboard {
     margin-bottom: 1rem;
     padding-bottom: 1rem;
@@ -46,7 +49,11 @@
         .find({ query: { group: session.studentGroupId } })
         .then(res => this.store.set({ activeStudents: res.data }))
       this.interval = setInterval(() => {
-        this.set({ time: new Date() })
+        const now = new Date()
+        this.set({ time: now })
+        if (now.toJSON() > session.endsAt ){
+          window.navigator.vibrate([100, 100, 200, 100, 300]);
+        }
       }, 20000);
     },
     ondestroy() {
@@ -65,7 +72,7 @@
           return myattendance && ['present', 'late'].includes(myattendance.status)
         })
       },
-      endsString: ({ $session, time }) => formatDistance($session.endsAt, time)
+      endsString: ({ $session, time }) => formatDistance($session.endsAt, time, {addSuffix: true})
     }
   }
 </script>
