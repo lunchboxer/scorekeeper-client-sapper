@@ -1,1 +1,77 @@
-<h2>Class Session Ended</h2>
+<h2>{$activeGroup.name} class results</h2>
+{#if $activeStudents}
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th><i class="material-icons">star</i></th>
+      <th><i class="material-icons">thumb_down</i></th>
+      <th>notes</th>
+    </tr>
+  </thead>
+  <tbody>
+    {#each presentStudents as student (student.id)}
+    <ResultsRow {student} />
+    {/each}
+  </tbody>
+
+</table>
+
+
+{#if absentStudents.length}
+<h3>Absent</h3>
+{absentStudentsNames}
+{/if}
+{:else}
+<p>Loading students...</p>
+{/if}
+
+<script>
+  import client from "../utils/feathers";
+  import { formatDistance } from "date-fns/esm";
+
+  export default {
+    components: {
+      ResultsRow: './ResultsRow.html'
+    },
+    data() {
+      return {
+        time: new Date()
+      };
+    },
+    oncreate() {
+      this.interval = setInterval(() => this.set({ time: new Date() }), 20000);
+      const { session, activeStudents, attendances } = this.store.get();
+      if (activeStudents && !activeStudents.length) {
+        client.service('students')
+          .find({ query: { group: session.studentGroupId } })
+          .then(res => this.store.set({ activeStudents: res.data }))
+      }
+    },
+    ondestroy() {
+      clearInterval(this.interval);
+    },
+    computed: {
+      absentStudentsNames: ({ absentStudents }) => {
+        const names = absentStudents.map(student => {
+          return student.englishName || student.chineseName + '(' + student.pinyinName + ')'
+        })
+        return names.join(', ')
+      },
+      absentStudents: ({ $activeStudents, $attendances }) => {
+        if (!$attendances || !$activeStudents) return []
+        return $activeStudents.filter(student => {
+          const myattendance = $attendances.find(attendance => attendance.student === student.id)
+          return myattendance && myattendance.status === 'absent'
+        })
+      },
+      presentStudents: ({ $activeStudents, $attendances }) => {
+        if (!$attendances || !$activeStudents) return []
+        return $activeStudents.filter(student => {
+          const myattendance = $attendances.find(attendance => attendance.student === student.id)
+          return myattendance && myattendance.status !== 'absent'
+        })
+      },
+    }
+  };
+</script>

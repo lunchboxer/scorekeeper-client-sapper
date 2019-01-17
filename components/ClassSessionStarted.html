@@ -10,15 +10,18 @@
 <div class="absentlist">
   <h3>Absent students</h3>
   {#each absentStudents as student (student.id)}
-  <AttendanceRow {student} />
+  <AttendanceRow {student} started=true />
   {/each}
 </div>
 {/if}
+
+<button on:click="endClass($session.id)">End class</button>
 
 <style>
   .late {
     color: red;
   }
+
   .scoreboard {
     margin-bottom: 1rem;
     padding-bottom: 1rem;
@@ -51,7 +54,7 @@
       this.interval = setInterval(() => {
         const now = new Date()
         this.set({ time: now })
-        if (now.toJSON() > session.endsAt ){
+        if (now.toJSON() > session.endsAt) {
           window.navigator.vibrate([100, 100, 200, 100, 300]);
         }
       }, 20000);
@@ -72,7 +75,12 @@
           return myattendance && ['present', 'late'].includes(myattendance.status)
         })
       },
-      endsString: ({ $session, time }) => formatDistance($session.endsAt, time, {addSuffix: true})
+      endsString: ({ $session, time }) => formatDistance($session.endsAt, time, { addSuffix: true })
+    },
+    methods: {
+      endClass(id) {
+        client.service('class-sessions').patch(id, { stage: "Ended" })
+      }
     }
   }
 </script>

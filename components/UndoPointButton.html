@@ -1,0 +1,51 @@
+{#if $recentPoint}
+<button on:click="handleUndo(event)"><i class="material-icons">undo</i>{$recentPoint.value} point to {student}</button>
+{/if}
+
+<style>
+  button {
+    display: flex;
+    align-items: center;
+  }
+
+  i {
+    margin-right: 1rem;
+  }
+</style>
+
+<script>
+  import client from '../utils/feathers'
+  export default {
+    oncreate() {
+      const { session } = this.store.get()
+      if (session) {
+        this.pointsSub = client.service('points').watch()
+          .find({ query: { classSessionId: session.id, $sort: { createdAt: -1 }, $limit: 10 } })
+          .subscribe(res => {
+            this.store.set({ recentPoint: res.data[0] })
+          })
+      }
+    },
+    ondestroy() {
+      if (this.pointsSub) {
+        this.pointsSub.unsubscribe()
+      }
+    },
+    computed: {
+      student: ({ $activeStudents, $recentPoint }) => {
+        if (!$activeStudents || !$recentPoint) return ''
+        const theone = $activeStudents.find(student => student.id === $recentPoint.studentId)
+        return theone.englishName || theone.chineseName
+      }
+    },
+    methods: {
+      handleUndo(event) {
+        event.preventDefault()
+        const { recentPoint } = this.store.get()
+        if (recentPoint) {
+          client.service('points').remove(recentPoint.id)
+        }
+      }
+    }
+  }
+</script>

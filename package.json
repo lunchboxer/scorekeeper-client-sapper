@@ -12,7 +12,7 @@
     "test": "run-p --race dev cy:run"
   },
   "dependencies": {
-    "@feathersjs/authentication-client": "^1.0.4",
+    "@feathersjs/authentication-client": "^1.0.10",
     "@feathersjs/feathers": "^3.2.1",
     "@feathersjs/socketio-client": "^1.1.2",
     "compression": "^1.7.3",
@@ -23,7 +23,7 @@
     "material-icons": "^0.2.3",
     "polka": "^0.4.0",
     "sapper": "^0.18.7",
-    "sirv": "^0.2.1",
+    "sirv": "^0.2.2",
     "socket.io-client": "^2.1.1",
     "svelte-transitions": "^1.2.0",
     "typeface-roboto": "0.0.54"
@@ -33,11 +33,11 @@
     "eslint-config-standard": "^12.0.0",
     "eslint-plugin-import": "^2.14.0",
     "eslint-plugin-node": "^7.0.1",
-    "eslint-plugin-promise": "^4.0.0",
+    "eslint-plugin-promise": "^4.0.1",
     "eslint-plugin-standard": "^4.0.0",
-    "npm-run-all": "^4.1.3",
-    "postcss": "^7.0.2",
-    "postcss-import": "^12.0.0",
+    "npm-run-all": "^4.1.5",
+    "postcss": "^7.0.13",
+    "postcss-import": "^12.0.1",
     "svelte": "^2.13.2",
     "svelte-loader": "^2.11.0",
     "svelte-preprocess-postcss": "^1.0.0",

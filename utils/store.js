@@ -9,7 +9,8 @@ const store = new Store({
   groups: [],
   session: {},
   attendances: [],
-  activeStudents: []
+  activeStudents: [],
+  recentPoint: null
 })
 
 store.compute('activeGroup', ['session', 'groups'], (session, groups) => {

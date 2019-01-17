@@ -17,9 +17,8 @@
   export default {
     oncreate() {
       this.classSessions = client.service('class-sessions').watch()
-        .find().subscribe(res => {
-          const sessions = res.data.sort((a, b) => a.startsAt > b.startsAt)
-          this.set({ classSessions: sessions })
+        .find({query: {$sort : {startsAt: -1}}}).subscribe(res => {
+          this.set({ classSessions: res.data })
         })
       client.service('student-groups').find().then(groups => {
         const sortedGroups = groups.data.sort((a, b) => a.name > b.name)

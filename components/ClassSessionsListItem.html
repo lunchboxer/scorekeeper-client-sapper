@@ -1,28 +1,25 @@
 {#if !edit}
 <li on:click="set({edit:true})">
-  <div class="main"><span class="group">{group ? group.name + ' class' : 'No class'}</span>
+  <div class="main">
+    <span class="group">{group ? group.name + ' class' : 'No class'}</span>
     <span class="distance">{distance}</span>
   </div>
   <span class="time">{startString}-{endTime}</span>
 </li>
-{:else}
-<ClassSessionForm edit id={session.id} startsAt={startsAtLocal} endsAt={endsAtLocal} group={group ? group.id : '' }
-  bind:show='edit' />
-{/if}
+{:else} <ClassSessionForm edit id={session.id} startsAt={startsAtLocal}
+endsAt={endsAtLocal} group={group ? group.id : '' } bind:show='edit' /> {/if}
 
 <style>
   .main {
-    font-size: 1.8rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
   }
 
   .group {
     font-size: 2.4rem;
     color: var(--primary-color);
     font-weight: 400;
-  }
-
-  .distance {
-    float: right;
   }
 
   li {
@@ -41,27 +38,29 @@
 </style>
 
 <script>
-  import { format, formatDistance } from 'date-fns/esm'
-  import { getRelativeClassTime } from '../utils/functions.js'
+  import { format, formatDistance } from "date-fns/esm";
+  import { getRelativeClassTime } from "../utils/functions.js";
 
   export default {
     components: {
-      ClassSessionForm: './ClassSessionForm.html'
+      ClassSessionForm: "./ClassSessionForm.html"
     },
     data() {
       return {
         edit: false
-      }
+      };
     },
     computed: {
       startsAt: ({ session }) => session.startsAt,
       endsAt: ({ session }) => session.endsAt,
       startsAtLocal: ({ startsAt }) => format(startsAt, "YYYY-MM-dd'T'HH:mm"),
       endsAtLocal: ({ endsAt }) => format(endsAt, "YYYY-MM-dd'T'HH:mm"),
-      startString: ({ startsAt }) => format(startsAt, 'eee MMM M, HH:mm'),
-      endTime: ({ endsAt }) => format(endsAt, 'HH:mm'),
-      distance: ({ session, time }) => getRelativeClassTime(session.startsAt, session.endsAt, time),
-      group: ({ session, $groups }) => $groups.find(group => group.id === session.studentGroupId)
+      startString: ({ startsAt }) => format(startsAt, "eee MMM M, HH:mm"),
+      endTime: ({ endsAt }) => format(endsAt, "HH:mm"),
+      distance: ({ session, time }) =>
+        getRelativeClassTime(session.startsAt, session.endsAt, time),
+      group: ({ session, $groups }) =>
+        $groups.find(group => group.id === session.studentGroupId)
     }
-  }
+  };
 </script>
