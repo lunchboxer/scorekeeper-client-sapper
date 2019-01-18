@@ -1,7 +1,7 @@
 {
-  "name": "sapper-feathers-template",
-  "description": "A starter template for a sapper based feathers client",
-  "version": "0.0.1",
+  "name": "scorekeeper-client-sapper",
+  "description": "client for scorekeeper",
+  "version": "0.1.0",
   "scripts": {
     "dev": "sapper dev",
     "build": "sapper build",
