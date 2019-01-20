@@ -1,21 +1,19 @@
 <tr class="results-row">
   <td>
     <span class="name">
-      {student.englishName || student.chineseName + '(' + student.pinyinName + ')'}
+      {student.englishName || student.chineseName + '(' + student.pinyinName +
+      ')'}
     </span>
   </td>
-  <td>
-    {pointsTally}
-  </td>
-  <td>
-    {negativeTally}
-  </td>
+  <td>{pointsTally}</td>
+  <td>{negativeTally}</td>
   <td>
     {#if attendance.status !== 'present'}
-    <span class="notpresent">{attendance.status}: {getTime(attendance.arrivedAt)}</span>
+    <span class="notpresent"
+      >{attendance.status}: {getTime(attendance.arrivedAt)}</span
+    >
     {/if}
   </td>
-
 </tr>
 
 <style>
@@ -31,42 +29,48 @@
 </style>
 
 <script>
-  import client from '../utils/feathers'
+  import client from "../utils/feathers";
   export default {
     oncreate() {
-      const { student } = this.get()
-      const { session } = this.store.get()
+      const { student } = this.get();
+      const { session } = this.store.get();
       if (session) {
-        client.service('points')
-          .find({ query: { studentId: student.id, classSessionId: session.id } })
-          .then(res => {
-            console.log(res)
-            this.set({ points: res.data })
+        client
+          .service("points")
+          .find({
+            query: { studentId: student.id, classSessionId: session.id }
           })
+          .then(res => this.set({ points: res.data }));
       }
     },
     data() {
       return {
         points: []
-      }
+      };
     },
     computed: {
       attendance: ({ student, $attendances }) => {
-        if (!$attendances) return null
-        return $attendances.find(attendance => attendance.student === student.id)
+        if (!$attendances) return null;
+        return $attendances.find(
+          attendance => attendance.student === student.id
+        );
       },
-      pointsTally: ({ points }) => !points.length
-        ? 0
-        : points.reduce(((tally, point) => tally + point.value), 0),
-      negativeTally: ({ points }) => !points.length
-        ? 0
-        : points.filter(point => point.value < 0).reduce(((tally, point) => tally + point.value), 0)
+      pointsTally: ({ points }) =>
+        !points.length
+          ? 0
+          : points.reduce((tally, point) => tally + point.value, 0),
+      negativeTally: ({ points }) =>
+        !points.length
+          ? 0
+          : points
+              .filter(point => point.value < 0)
+              .reduce((tally, point) => tally + point.value, 0)
     },
     helpers: {
       getTime(date) {
-        const dateTime = new Date(date)
-        return dateTime.getHours() + ':' + dateTime.getMinutes()
+        const dateTime = new Date(date);
+        return dateTime.getHours() + ":" + dateTime.getMinutes();
       }
     }
-  }
+  };
 </script>
