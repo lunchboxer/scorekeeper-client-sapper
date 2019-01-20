@@ -75,7 +75,7 @@
           return myattendance && ['present', 'late'].includes(myattendance.status)
         })
       },
-      endsString: ({ $session, time }) => formatDistance($session.endsAt, time, { addSuffix: true })
+      endsString: ({ $session, time }) => formatDistance(new Date($session.endsAt), time, { addSuffix: true })
     },
     methods: {
       endClass(id) {

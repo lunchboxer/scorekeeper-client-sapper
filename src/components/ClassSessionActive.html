@@ -47,7 +47,7 @@
       }
     },
     computed: {
-      distance: ({ $session, time }) => formatDistanceStrict($session.startsAt, new Date(), { addSuffix: true, includeSeconds: true })
+      distance: ({ $session, time }) => formatDistanceStrict(new Date($session.startsAt), new Date(), { addSuffix: true, includeSeconds: true })
     },
     methods: {
       startClass(id) {
