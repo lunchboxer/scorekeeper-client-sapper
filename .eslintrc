@@ -1,3 +1,23 @@
 {
-  "extends": "standard"
+  "extends": "standard",
+  "plugins": ["html", "@tivac/svelte"],
+  "rules": {
+    "@tivac/svelte/onstate-this-refs": "error",
+    "@tivac/svelte/property-ordering": [
+      "error",
+      {
+        "order": [
+          "components",
+          "preload",
+          "oncreate",
+          "onstate",
+          "ondestroy",
+          "data",
+          "computed",
+          "methods",
+          "helpers"
+        ]
+      }
+    ]
+  }
 }

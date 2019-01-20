@@ -4,7 +4,7 @@ Built with the default [Sapper](https://github.com/sveltejs/sapper) template. So
 
 ```bash
 npm install # or yarn!
-cp -r node_modules/typeface-roboto assets # we're serving it locally
+cp -r node_modules/material-design-icons-iconfont/ static # we're serving it locally
 npm run dev
 ```
 

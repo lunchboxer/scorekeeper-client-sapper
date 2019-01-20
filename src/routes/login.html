@@ -9,13 +9,11 @@
 <form on:submit="handleSubmit(event)">
   <fieldset>
     <label for="usernameField">Username</label>
-    <input type="text" id="usernameField" bind:value=username>
+    <input type="text" id="usernameField" bind:value="username" />
     <label for="passwordField">Password</label>
-    <input type="password" id="passwordField" bind:value=password>
-    <br>
-    <input class="button" type="submit" value="Log in" id="loginButton">
-    <a class="button button-outline" href="signup">Sign up</a>
-    <br>
+    <input type="password" id="passwordField" bind:value="password" /> <br />
+    <input class="button" type="submit" value="Log in" id="loginButton" />
+    <a class="button button-outline" href="signup">Sign up</a> <br />
     <span class="error">{error}</span>
   </fieldset>
 </form>
@@ -34,7 +32,7 @@
 
 <script>
   import client from "../utils/feathers";
-  import { goto } from "sapper/runtime";
+  import { goto } from "../../__sapper__/client.js";
   import { addMessage } from "../utils/notificationTools.js";
 
   export default {
@@ -64,7 +62,7 @@
           .catch(error => {
             event.target.querySelector("input[type=submit]").disabled = false;
             this.set({ error: error.message });
-            addMessage("Something went wrong.")
+            addMessage("Something went wrong.");
           });
       },
       addMessage

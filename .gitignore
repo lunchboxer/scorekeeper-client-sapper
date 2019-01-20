@@ -1,11 +1,6 @@
 .DS_Store
 node_modules
-/.sapper/
-yarn.lock
 yarn-error.log
 /cypress/screenshots/
-/templates/.*
-/export/
-/build/
-/app/manifest/
-/assets/typeface-roboto/
+/__sapper__
+/static/material-icons/

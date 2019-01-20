@@ -51,10 +51,10 @@ endsAt={endsAtLocal} group={group ? group.id : '' } bind:show='edit' /> {/if}
       };
     },
     computed: {
-      startsAt: ({ session }) => session.startsAt,
-      endsAt: ({ session }) => session.endsAt,
-      startsAtLocal: ({ startsAt }) => format(startsAt, "YYYY-MM-dd'T'HH:mm"),
-      endsAtLocal: ({ endsAt }) => format(endsAt, "YYYY-MM-dd'T'HH:mm"),
+      startsAt: ({ session }) => new Date(session.startsAt),
+      endsAt: ({ session }) => new Date(session.endsAt),
+      startsAtLocal: ({ startsAt }) => format(startsAt, "yyyy-MM-dd'T'HH:mm"),
+      endsAtLocal: ({ endsAt }) => format(endsAt, "yyyy-MM-dd'T'HH:mm"),
       startString: ({ startsAt }) => format(startsAt, "eee MMM M, HH:mm"),
       endTime: ({ endsAt }) => format(endsAt, "HH:mm"),
       distance: ({ session, time }) =>
