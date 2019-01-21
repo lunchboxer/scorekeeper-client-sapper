@@ -16,7 +16,6 @@
     "@feathersjs/feathers": "^3.3.1",
     "@feathersjs/socketio-client": "^1.2.1",
     "compression": "^1.7.3",
-    "cookie-storage": "^3.2.0",
     "date-fns": "^2.0.0-alpha.27",
     "feathers-reactive": "^0.7.2",
     "material-design-icons-iconfont": "^4.0.4",
