@@ -1,6 +1,7 @@
 {#if showinput}
 <form on:submit="handleSubmit(event)" novalidate ref:form>
   <FancyTextInput ref:input label="New class name" pattern="^\w+$" maxlength="20" required name="nameField" bind:value=name />
+  <br>
   <input type="submit" ref:submit value="Create" />
   <input type="reset" on:click="set({showinput: false, name: ''})" class="button-outline" value="Cancel" />
   {#if error}
