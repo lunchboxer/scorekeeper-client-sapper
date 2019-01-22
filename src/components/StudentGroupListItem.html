@@ -2,7 +2,7 @@
   <h3>
     {#if showConfirm}
     <span>Delete {name} Class?</span>
-    <span class="float-right" on:blur="set({showConfirm:false})">
+    <span class="float-right pointer" on:blur="set({showConfirm:false})">
       <span on:click="handleDelete(event)">Yes</span>/
       <span on:click="set({showConfirm: false})">No</span>
     </span>
@@ -16,8 +16,7 @@
     {/if}
     <span class="studentscount">
       {#if !students.length && name !== "unassigned"}
-
-      <span on:click="set({showConfirm: true})">&times; Delete class</span>
+      <span class="pointer" on:click="set({showConfirm: true})">&times; Delete class</span>
       {:else}
       {students.length} students
       {/if}
