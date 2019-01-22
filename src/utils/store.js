@@ -1,7 +1,7 @@
-import { Store } from 'svelte/store.js'
 import { APPNAME } from './constants.js'
+import { StoreWithNotifications } from './storeWithNotifications.js'
 
-const store = new Store({
+const store = new StoreWithNotifications({
   APPNAME,
   notifications: {},
   user: null,
