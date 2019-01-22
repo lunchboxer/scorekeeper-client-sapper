@@ -1,5 +1,5 @@
 <span class="notification-message">{message}</span>
-<span class="notification-close" on:click="removeMessage(id)">&times;</span>
+<span class="notification-close" on:click="$removeMessage(id)">&times;</span>
 
 
 <style>
@@ -21,7 +21,6 @@
 </style>
 
 <script>
-  import { removeMessage } from '../utils/notificationTools.js'
 
   export default {
     immutable: true,
@@ -29,14 +28,11 @@
     oncreate() {
       const { id } = this.get()
       this.timeout = setTimeout(() => {
-        this.removeMessage(id)
+        this.store.removeMessage(id)
       }, 4000)
     },
     ondestroy() {
       clearTimeout(this.timeout);
-    },
-    methods: {
-      removeMessage
     }
   }
 </script>

@@ -29,7 +29,6 @@
 
 <script>
   import client from '../utils/feathers.js'
-  import { addMessage } from '../utils/notificationTools.js'
 
   export default {
     data() {
@@ -41,13 +40,12 @@
       handleDelete() {
         const { student } = this.get()
         client.service("students").remove(student)
-          .then(this.addMessage("Student successfully deleted"))
+          .then(this.store.addMessage("Student successfully deleted"))
           .catch(err => {
             console.log(err)
-            this.addMessage("Student could not be deleted")
+            this.store.addMessage("Student could not be deleted")
           })
-      },
-      addMessage
+      }
     }
   }
 </script>

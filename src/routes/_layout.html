@@ -15,30 +15,26 @@
 
 <script>
   import client from '../utils/feathers'
-  import store from '../utils/store.js'
 
   export default {
     components: {
       Nav: '../components/Nav.html',
       NotificationList: "../components/NotificationList.html"
     },
-    store: () => store,
     oncreate() {
-      // for debugging purposes
-      // window.store = store
-      client.authenticate().catch(store.set({ user: null, login: null }))
-      client.on('authenticated', this.authenticatedListener)
-      client.on('logout', this.logoutListener)
+      client.authenticate().catch(this.store.set({ user: null, login: null }))
+      client.on('authenticated', this.authenticatedListener.bind(this))
+      client.on('logout', this.logoutListener.bind(this))
     },
     methods: {
       async authenticatedListener(res) {
         const payload = await client.passport.verifyJWT(res.accessToken)
         const user = await client.service('users').get(payload.userId)
         const groups = await client.service('student-groups').find()
-        store.set({ user, login: res.accessToken, groups: groups.data })
+        this.store.set({ user, login: res.accessToken, groups: groups.data })
       },
       logoutListener() {
-        store.set({ user: null, login: null })
+        this.store.set({ user: null, login: null })
       }
     }
   };

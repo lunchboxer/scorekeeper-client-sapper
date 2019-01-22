@@ -6,7 +6,6 @@
 
 <script>
   import client from '../utils/feathers.js'
-  import { addMessage } from '../utils/notificationTools.js'
   import ClassSessionActive from './ClassSessionActive.html'
   import ClassSessionStarted from './ClassSessionStarted.html'
   import ClassSessionEnded from './ClassSessionEnded.html'
@@ -17,7 +16,7 @@
       const { id } = session
       if (!id) {
         this.store.set({ session: {} })
-        this.addMessage('Error: Session not found')
+        this.store.addMessage('Error: Session not found')
       }
       this.attendances = client.service('attendances').watch()
         .find({ query: { session: id } })
@@ -56,9 +55,8 @@
         await client.service('class-sessions')
           .patch(null, { stage: "Ended" }, { query: { stage: "Started" } })
         client.service('class-sessions').patch(id, { stage: "Active" })
-        this.addMessage('Activated class session')
-      },
-      addMessage
+        this.store.addMessage('Activated class session')
+      }
     }
   }
 </script>

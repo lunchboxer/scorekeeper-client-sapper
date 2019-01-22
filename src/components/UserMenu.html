@@ -69,7 +69,6 @@
 <script>
   import { fade } from 'svelte-transitions'
   import client from '../utils/feathers'
-  import { addMessage } from '../utils/notificationTools.js';
 
   export default {
     transitions: { fade },
@@ -78,9 +77,8 @@
     },
     methods: {
       handleLogout() {
-        client.logout().then(addMessage("Logged out successfully."))
-      },
-      addMessage
+        client.logout().then(this.store.addMessage("Logged out successfully."))
+      }
     }
   }
 </script>

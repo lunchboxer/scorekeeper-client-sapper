@@ -33,7 +33,6 @@
 <script>
   import client from "../utils/feathers";
   import { goto } from "../../__sapper__/client.js";
-  import { addMessage } from "../utils/notificationTools.js";
 
   export default {
     data() {
@@ -57,15 +56,14 @@
           .then(() => {
             this.set({ username: "", password: "" });
             goto("/");
-            addMessage(`Logged in as ${username}`);
+            this.store.addMessage(`Logged in as ${username}`);
           })
           .catch(error => {
             event.target.querySelector("input[type=submit]").disabled = false;
             this.set({ error: error.message });
-            addMessage("Something went wrong.");
+            this.store.addMessage("Something went wrong.");
           });
-      },
-      addMessage
+      }
     }
   };
 </script>

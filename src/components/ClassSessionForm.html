@@ -51,7 +51,6 @@
 
 <script>
   import client from '../utils/feathers.js'
-  import { addMessage } from '../utils/notificationTools.js'
 
   export default {
     components: {
@@ -77,7 +76,7 @@
         event.preventDefault()
         const isValid = this.refs.form.checkValidity()
         if (!isValid) {
-          this.addMessage("Please fix form errors first.")
+          this.store.addMessage("Please fix form errors first.")
           return
         }
         this.refs.submit.disabled = true
@@ -94,13 +93,13 @@
           .service("class-sessions")
           .create({ startsAt, endsAt, studentGroupId: group })
           .then(() => {
-            this.addMessage("New session added successfully")
+            this.store.addMessage("New session added successfully")
             this.set({ error: '', show: false })
           })
           .catch(error => {
             this.refs && (this.refs.submit.disabled = false)
             this.set({ error: error.message })
-            this.addMessage("There was a problem adding the session.")
+            this.store.addMessage("There was a problem adding the session.")
           })
       },
       editSession() {
@@ -110,16 +109,15 @@
           .service("class-sessions")
           .patch(id, { startsAt, endsAt, studentGroupId: group })
           .then(() => {
-            this.addMessage("Session edited successfully")
+            this.store.addMessage("Session edited successfully")
             this.set({ error: '', show: false })
           })
           .catch(error => {
             this.refs && (this.refs.submit.disabled = false)
             this.set({ error: error.message })
-            this.addMessage("There was a problem editing the session.")
+            this.store.addMessage("There was a problem editing the session.")
           })
-      },
-      addMessage
+      }
     }
   }
 </script>

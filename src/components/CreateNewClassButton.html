@@ -13,7 +13,6 @@
 {/if}
 
 <script>
-  import { addMessage } from '../utils/notificationTools.js'
   import client from '../utils/feathers.js'
   export default {
     components: {
@@ -31,7 +30,7 @@
         event.preventDefault()
         const isValid = this.refs.form.checkValidity()
         if (!isValid) {
-          this.addMessage("Please fix form errors first.")
+          this.store.addMessage("Please fix form errors first.")
           return
         }
         event.target.querySelector("input[type=submit]").disabled = true
@@ -41,16 +40,15 @@
           .create({ name })
           .then(() => {
             this.refs.submit.disabled = false
-            this.addMessage("New class added successfully")
+            this.store.addMessage("New class added successfully")
             this.set({ error: '', showinput: false, name: '' })
           })
           .catch(error => {
             this.refs.submit.disabled = false
             this.set({ error: error.message })
-            this.addMessage("There was a problem creating the class.")
+            this.store.addMessage("There was a problem creating the class.")
           })
-      },
-      addMessage
+      }
     }
   }
 </script>

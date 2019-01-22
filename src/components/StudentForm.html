@@ -73,7 +73,6 @@
 
 <script>
   import client from '../utils/feathers.js'
-  import { addMessage } from '../utils/notificationTools.js'
 
   export default {
     oncreate() {
@@ -102,7 +101,7 @@
         event.preventDefault()
         const isValid = this.refs.form.checkValidity()
         if (!isValid) {
-          this.addMessage("Please fix form errors first.")
+          this.store.addMessage("Please fix form errors first.")
           return
         }
         event.target.querySelector("input[type=submit]").disabled = true
@@ -120,13 +119,13 @@
           .service("students")
           .update(id, { chineseName, pinyinName, englishName, gender, birthdate, group })
           .then(() => {
-            this.addMessage("Student edited successfully")
+            this.store.addMessage("Student edited successfully")
             this.set({ error: '', show: false })
           })
           .catch(error => {
             this.refs.submit.disabled = false
             this.set({ error: error.message })
-            this.addMessage("There was a problem editing the student.")
+            this.store.addMessage("There was a problem editing the student.")
           })
       },
       addStudent() {
@@ -137,16 +136,15 @@
           .create({ chineseName, pinyinName, englishName, gender, birthdate, group: groupId })
           .then(() => {
             this.refs && (this.refs.submit.disabled = false)
-            this.addMessage("New student added successfully")
+            this.store.addMessage("New student added successfully")
             this.set({ error: '', show: false })
           })
           .catch(error => {
             this.refs && (this.refs.submit.disabled = false)
             this.set({ error: error.message })
-            this.addMessage("There was a problem adding the student.")
+            this.store.addMessage("There was a problem adding the student.")
           })
-      },
-      addMessage
+      }
     }
   }
 </script>

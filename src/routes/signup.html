@@ -31,7 +31,6 @@
 <script>
   import client from "../utils/feathers";
   import { goto } from "../../__sapper__/client.js";
-  import { addMessage } from "../utils/notificationTools.js";
 
   export default {
     data() {
@@ -53,7 +52,7 @@
         event.preventDefault()
         const isValid = this.refs.form.checkValidity()
         if (!isValid) {
-          this.addMessage("Please fix form errors first.");
+          this.store.addMessage("Please fix form errors first.");
           return;
         }
         event.target.querySelector("input[type=submit]").disabled = true;
@@ -62,7 +61,7 @@
           .service("users")
           .create({ username, password })
           .then(() => {
-            this.addMessage("New account created successfully");
+            this.store.addMessage("New account created successfully");
             client.authenticate({
               strategy: "local",
               username,
@@ -71,15 +70,14 @@
           })
           .then(() => {
             goto("/");
-            this.addMessage(`Logged in as ${username}.`);
+            this.store.addMessage(`Logged in as ${username}.`);
           })
           .catch(error => {
             event.target.querySelector("input[type=submit]").disabled = false;
             this.set({ error: error.message });
-            this.addMessage("There was a problem signing up.");
+            this.store.addMessage("There was a problem signing up.");
           });
-      },
-      addMessage
+      }
     }
   }
 </script>
