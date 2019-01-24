@@ -5,7 +5,11 @@
   {/if}
 </div>
 <!--  can't have dynamic type attribute and two-way value binding on one input -->
-{#if type === 'text'}
+{#if type === 'number'}
+<input type='number' {name} {max} {min} {required} aria-describedby={descriptionId} on:input="checkValidity()"
+  on:invalid="invalidHandler(event)" class:error="error" on:focus="set({showDescription: !showDescription})" on:blur="set({showDescription: !showDescription})"
+  bind:value ref:input />
+{:elseif type === 'text'}
 <input type='text' {name} {pattern} {minlength} {maxlength} {required} aria-describedby={descriptionId} on:input="checkValidity()"
   on:invalid="invalidHandler(event)" class:error="error" on:focus="set({showDescription: !showDescription})" on:blur="set({showDescription: !showDescription})"
   bind:value ref:input />
@@ -64,7 +68,7 @@
   .error-message {
     color: red;
     font-size: 80%;
-    float: right;
+    /* float: right; */
     padding-top: 0.3rem;
   }
 </style>
