@@ -1,0 +1,58 @@
+{#if !show}
+<button on:click="set({show:true})">Register viewer</button>
+{:else}
+<h3>Register viewer</h3>
+<label for="view-select">Viewer</label>
+<select id="view-select" bind:value=viewerId>
+  <option value="">--</option>
+  {#each viewers as viewer}
+  <option value={viewer.id}>{viewer.name}</option>
+  {/each}
+</select>
+<div>
+  <FancyTextInput type="number" bind:value=code name="code" label="Code" max=999 min=0 />
+</div>
+<button on:click="handleRegister(event)">Register</button>
+<button on:click="handleCancel(event)">Cancel</button>
+{/if}
+
+<style>
+  div {
+    max-width: 9rem;
+  }
+
+  select {
+    max-width: 30rem;
+  }
+</style>
+
+<script>
+  import client from '../utils/feathers'
+  export default {
+    components: {
+      FancyTextInput: './FancyTextInput.html'
+    },
+    data() {
+      return {
+        viewers: [],
+        viewerId: '',
+        code: 888,
+        show: false
+
+      }
+    },
+    oncreate() {
+      client.service("viewers").find().then(res => this.set({ viewers: res.data }))
+    },
+    methods: {
+      handleRegister(event) {
+        event.preventDefault()
+        const { viewerId, code } = this.get()
+      },
+      handleCancel(event) {
+        event.preventDefault()
+        this.set({ viewerId: '', code: 888, show: false })
+      }
+    }
+  }
+</script>

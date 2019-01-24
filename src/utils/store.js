@@ -10,7 +10,9 @@ const store = new StoreWithNotifications({
   session: {},
   attendances: [],
   activeStudents: [],
-  recentPoint: null
+  recentPoint: null,
+  authStatus: null,
+  viewer: null
 })
 
 store.compute('activeGroup', ['session', 'groups'], (session, groups) => {

@@ -1,12 +1,8 @@
 <nav>
   <ul class="float-left">
-    {#if !$login}
-    <li><a class='{segment === undefined ? "selected" : ""}' href='.'>about</a></li>
-    {:else}
     <li><a class='{segment === undefined ? "selected" : ""}' href='.'>dashboard</a></li>
     <li><a class='{segment === "students" ? "selected" : ""}' href='students'>students</a></li>
     <li><a class='{segment === "class-sessions" ? "selected" : ""}' href='class-sessions'>schedule</a></li>
-    {/if}
   </ul>
   <ul class="float-right">
     <li>

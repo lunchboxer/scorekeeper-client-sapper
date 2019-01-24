@@ -1,17 +1,19 @@
+{#if child.segment !== 'viewer'}
+{#if $login}
 <Nav segment={child.segment} />
-<div class="container">
-  <main>
-    <svelte:component this={child.component} {...child.props} />
-  </main>
-
-</div>
+{/if}
 <NotificationList></NotificationList>
+{/if}
 
-<style>
-  .container {
-    margin: 0;
-  }
-</style>
+<main class:container="child.segment !== 'viewer'">
+  {#if !$authStatus && !error}
+  <Authenticating />
+  {:elseif $authStatus === "loggedIn" || error}
+  <svelte:component this={child.component} {...child.props} />
+  {:else}
+  <Login />
+  {/if}
+</main>
 
 <script>
   import client from '../utils/feathers'
@@ -19,10 +21,17 @@
   export default {
     components: {
       Nav: '../components/Nav.html',
-      NotificationList: "../components/NotificationList.html"
+      NotificationList: "../components/NotificationList.html",
+      Login: "../components/Login.html",
+      Authenticating: "../components/Authenticating.html"
+    },
+    data() {
+      return {
+        error: null
+      }
     },
     oncreate() {
-      client.authenticate().catch(this.store.set({ user: null, login: null }))
+      this.authenticate()
       client.on('authenticated', this.authenticatedListener.bind(this))
       client.on('logout', this.logoutListener.bind(this))
     },
@@ -31,10 +40,18 @@
         const payload = await client.passport.verifyJWT(res.accessToken)
         const user = await client.service('users').get(payload.userId)
         const groups = await client.service('student-groups').find()
-        this.store.set({ user, login: res.accessToken, groups: groups.data })
+        this.store.set({ user, login: res.accessToken, groups: groups.data, authStatus: 'loggedIn' })
       },
       logoutListener() {
-        this.store.set({ user: null, login: null })
+        this.store.set({ user: null, login: null, authStatus: 'loggedOut' })
+      },
+      async authenticate() {
+        try {
+          const res = await client.authenticate()
+          this.store.set({ login: res.accessToken, authStatus: 'loggedIn' })
+        } catch (e) {
+          this.store.set({ login: null, user: null, authStatus: 'loggedOut' })
+        }
       }
     }
   };

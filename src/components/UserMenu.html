@@ -5,7 +5,7 @@
     {#if segment!=="profile"}
     <li><a href='profile'>profile</a></li>
     {/if}
-    <li><a href="/" on:click="handleLogout()">log out</a></li>
+    <li><span on:click="handleLogout()">log out</span></li>
   </ul>
   {/if}
 </div>
@@ -48,7 +48,8 @@
     color: var(--color-on-primary);
   }
 
-  li:hover a {
+  li:hover a,
+  li:hover span {
     color: var(--color-on-primary);
   }
 

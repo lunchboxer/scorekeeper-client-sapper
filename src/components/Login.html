@@ -1,0 +1,83 @@
+<svelte:head>
+  <title>{$APPNAME}: login</title>
+</svelte:head>
+<div class="container">
+  <div class="login">
+    <h1>{$APPNAME}</h1>
+    <h3>Log in to continue.</h3>
+    {#if $login}
+    <p>You are already logged in</p>
+    {:else}
+    <form on:submit="handleSubmit(event)">
+      <fieldset>
+        <FancyTextInput name='usernameField' type='text' bind:value="username" label="Username" required />
+        <FancyTextInput name='passwordField' type='password' bind:value="password" label="Password" required />
+        <br>
+        <input class="button" type="submit" value="Let me in!" id="loginButton" />
+        <span class="error">{error}</span>
+      </fieldset>
+    </form>
+    {/if}
+  </div>
+</div>
+
+
+<style>
+  .container {
+    width: calc(100vw - 4rem);
+    margin: 0;
+    text-align: center;
+  }
+
+  .login {
+    display: inline-block;
+    margin: 20vh 0;
+    width: auto;
+    text-align: left;
+    padding: 3rem;
+    border-radius: 1rem;
+  }
+
+  .error {
+    color: red;
+  }
+</style>
+
+<script>
+  import client from "../utils/feathers";
+
+  export default {
+    components: {
+      FancyTextInput: './FancyTextInput.html'
+    },
+    data() {
+      return {
+        username: "",
+        password: "",
+        error: ""
+      };
+    },
+    methods: {
+      handleSubmit(event) {
+        event.target.querySelector("input[type=submit]").disabled = true;
+        event.preventDefault();
+        const { username, password } = this.get();
+        return client
+          .authenticate({
+            strategy: "local",
+            username,
+            password
+          })
+          .then(() => {
+            this.set({ username: "", password: "" });
+            this.store.addMessage(`Logged in as ${username}`);
+          })
+          .catch(error => {
+            event.target.querySelector("input[type=submit]").disabled = false;
+            this.set({ error: error.message });
+            this.store.addMessage("Login failed.");
+          });
+      }
+    }
+  };
+</script>
