@@ -1,0 +1,38 @@
+<svelte:head>
+  <title>{$APPNAME}: Viewer</title>
+</svelte:head>
+
+<h1>{$APPNAME}</h1>
+
+{#if !$viewer}
+<ViewerRegistration />
+{/if}
+
+
+<style>
+  h1 {
+    margin: 2rem;
+  }
+
+  :root {
+    --primary-color: #5f4b8b;
+    --base-color: #bbbbbb;
+    --background: black;
+    --alt-background: #f4f5f6;
+    --color-on-primary: #ffffff;
+  }
+</style>
+
+<script>
+  import client from '../utils/feathers'
+
+  export default {
+    oncreate() {
+      const viewer = localStorage.getItem('viewer')
+      this.store.set({ viewer })
+    },
+    components: {
+      ViewerRegistration: '../components/ViewerRegistration.html'
+    }
+  }
+</script>

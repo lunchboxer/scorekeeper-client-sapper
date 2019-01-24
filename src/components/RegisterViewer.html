@@ -4,7 +4,7 @@
 <h3>Register viewer</h3>
 <label for="view-select">Viewer</label>
 <select id="view-select" bind:value=viewerId>
-  <option value="">--</option>
+  <option value=''>--</option>
   {#each viewers as viewer}
   <option value={viewer.id}>{viewer.name}</option>
   {/each}
@@ -36,7 +36,7 @@
       return {
         viewers: [],
         viewerId: '',
-        code: 888,
+        code: '',
         show: false
 
       }
@@ -46,8 +46,17 @@
     },
     methods: {
       handleRegister(event) {
+        const { user } = this.store.get()
         event.preventDefault()
         const { viewerId, code } = this.get()
+        client.service('commands')
+          .create({ from: user.id, to: code, message: 'registerViewer', viewer: viewerId })
+          .then(res => {
+            console.log('completed')
+            this.store.addMessage('Sent registration command.')
+            this.set({ show: false, error: '' })
+          })
+          .catch(error => this.state({ error }))
       },
       handleCancel(event) {
         event.preventDefault()

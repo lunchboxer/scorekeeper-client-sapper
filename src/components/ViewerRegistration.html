@@ -1,0 +1,68 @@
+<div class="viewer-info">
+  <p>This viewer must be registered.</p>
+  <h2 class="code">Code: {code}</h2>
+</div>
+
+
+<style>
+  .viewer-info {
+    margin: 5rem;
+    text-align: center;
+  }
+
+  .code {
+    font-size: 8rem;
+  }
+</style>
+
+<script>
+  import client from '../utils/feathers'
+
+  export default {
+    onstate({ changed, current, previous }) {
+      if (changed.code && previous) {
+        if (this.registrationWatcher) this.registrationWatcher.unsubscribe()
+        this.setSub()
+      }
+    },
+    oncreate() {
+      // watch for the command to register if we aren't registered yet.
+      this.setSub()
+      // change the temporary code every minute
+      this.interval = setInterval(this.resetCode.bind(this), 5000);
+    },
+    ondestroy() {
+      if (this.registrationWatcher) this.registrationWatcher.unsubscribe()
+      clearInterval(this.interval)
+    },
+    data() {
+      return {
+        code: Math.floor(Math.random() * 1000),
+        previousCode: null,
+        viewer: null
+      }
+    },
+    methods: {
+      resetCode() {
+        const { code } = this.get()
+        const newCode = Math.floor(Math.random() * 1000)
+        this.set({ code: newCode, previousCode: code })
+      },
+      setSub() {
+        const { code } = this.get()
+        const previousCode = this.get().previousCode || 9999
+        this.registrationWatcher = client.service('commands').watch()
+          .find({
+            query: { message: "registerViewer", to: { $in: [code, previousCode] }, $sort: { createdAt: -1 } }
+          })
+          .subscribe(res => {
+            if (res.total > 0) {
+              const viewer = res.data[0].viewer
+              localStorage.setItem('viewer', viewer)
+              this.store.set({ viewer })
+            }
+          })
+      }
+    }
+  }
+</script>
