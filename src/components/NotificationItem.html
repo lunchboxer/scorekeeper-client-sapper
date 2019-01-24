@@ -1,20 +1,31 @@
-<span class="notification-message">{message}</span>
-<span class="notification-close" on:click="$removeMessage(id)">&times;</span>
+<div>
+  <span class="notification-message">{message}</span>
+  <span class="notification-close" on:click="$removeMessage(id)">&times;</span>
+</div>
+
 
 
 <style>
+  div {
+    border: 1px solid var(--primary-color);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 0.5rem;
+  }
+
   .notification-message {
-    padding: 1rem;
-    float: left;
-    position: relative;
-    top: 3px;
+    padding: 0 1rem;
+    font-weight: bold;
+    color: var(--primary-color);
   }
 
   .notification-close {
-    padding: 1rem;
+    padding: 0 1rem;
     font-weight: 900;
     font-size: 120%;
-    float: right;
+    /* float: right; */
     color: var(--base-color);
     cursor: pointer;
   }
