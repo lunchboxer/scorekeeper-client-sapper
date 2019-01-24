@@ -6,8 +6,9 @@
   </div>
   <span class="time">{startString}-{endTime}</span>
 </li>
-{:else} <ClassSessionForm edit id={session.id} startsAt={startsAtLocal}
-endsAt={endsAtLocal} group={group ? group.id : '' } bind:show='edit' /> {/if}
+{:else}
+<ClassSessionForm edit id={session.id} startsAt={startsAtLocal} endsAt={endsAtLocal} group={group ? group.id : '' }
+  bind:show='edit' /> {/if}
 
 <style>
   .main {
@@ -29,11 +30,15 @@ endsAt={endsAtLocal} group={group ? group.id : '' } bind:show='edit' /> {/if}
     padding: 1.6rem;
     margin: 1rem 0;
     cursor: pointer;
-    border: 1px solid #eeeeee;
+    border: 1px solid var(--primary-color);
   }
 
   li:hover {
-    background-color: #f4f4f4;
+    background-color: var(--primary-color);
+  }
+
+  li:hover .group {
+    color: var(--on-primary);
   }
 </style>
 
