@@ -58,8 +58,12 @@
           .subscribe(res => {
             if (res.total > 0) {
               const viewer = res.data[0].viewer
-              localStorage.setItem('viewer', viewer)
               this.store.set({ viewer })
+              if (viewer) {
+                localStorage.setItem('viewer', viewer)
+              } else {
+                localStorage.removeItem('viewer')
+              }
             }
           })
       }
