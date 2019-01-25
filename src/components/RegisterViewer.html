@@ -49,8 +49,8 @@
         const { user } = this.store.get()
         event.preventDefault()
         const { viewerId, code } = this.get()
-        client.service('commands')
-          .create({ from: user.id, to: code, message: 'registerViewer', viewer: viewerId })
+        client.service('messages')
+          .create({ from: user.id, to: code, body: 'registerViewer', data: viewerId })
           .then(res => {
             console.log('completed')
             this.store.addMessage('Sent registration command.')

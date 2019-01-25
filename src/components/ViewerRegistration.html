@@ -19,20 +19,14 @@
   import client from '../utils/feathers'
 
   export default {
-    onstate({ changed, current, previous }) {
-      if (changed.code && previous) {
-        if (this.registrationWatcher) this.registrationWatcher.unsubscribe()
-        this.setSub()
-      }
-    },
     oncreate() {
       // watch for the command to register if we aren't registered yet.
-      this.setSub()
+      client.service('messages').on('created', this.onCreatedListener.bind(this))
       // change the temporary code every minute
-      this.interval = setInterval(this.resetCode.bind(this), 5000);
+      this.interval = setInterval(this.resetCode.bind(this), 60000);
     },
     ondestroy() {
-      if (this.registrationWatcher) this.registrationWatcher.unsubscribe()
+      client.service('messages').removeListener('created', this.onCreatedListener)
       clearInterval(this.interval)
     },
     data() {
@@ -48,24 +42,13 @@
         const newCode = Math.floor(Math.random() * 1000)
         this.set({ code: newCode, previousCode: code })
       },
-      setSub() {
+      onCreatedListener(message) {
         const { code } = this.get()
         const previousCode = this.get().previousCode || 9999
-        this.registrationWatcher = client.service('commands').watch()
-          .find({
-            query: { message: "registerViewer", to: { $in: [code, previousCode] }, $sort: { createdAt: -1 } }
-          })
-          .subscribe(res => {
-            if (res.total > 0) {
-              const viewer = res.data[0].viewer
-              this.store.set({ viewer })
-              if (viewer) {
-                localStorage.setItem('viewer', viewer)
-              } else {
-                localStorage.removeItem('viewer')
-              }
-            }
-          })
+        if ([code, previousCode].includes(message.to) && message.body === "registerViewer") {
+          this.store.set({ viewer: message.data })
+          localStorage.setItem('viewer', message.data)
+        }
       }
     }
   }
