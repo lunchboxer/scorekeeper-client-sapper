@@ -14,4 +14,8 @@ if (typeof window !== 'undefined') { // for ssr to not freak out
 } else {
   client.configure(auth())
 }
+
+if (typeof window !== 'undefined' && process.env.NODE_ENV === 'development') {
+  window.client = client
+}
 export default client

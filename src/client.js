@@ -5,3 +5,7 @@ sapper.start({
   target: document.querySelector('#sapper'),
   store: () => store
 })
+
+if (process.env.NODE_ENV === 'development') {
+  window.store = store
+}
