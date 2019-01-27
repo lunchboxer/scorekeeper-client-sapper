@@ -16,7 +16,7 @@
 </style>
 
 <script>
-  import client from '../utils/feathers'
+  import client from '../../utils/feathers'
 
   export default {
     oncreate() {
@@ -45,9 +45,11 @@
       onCreatedListener(message) {
         const { code } = this.get()
         const previousCode = this.get().previousCode || 9999
-        if ([code, previousCode].includes(message.to) && message.body === "registerViewer") {
+        if ([code, previousCode].includes(message.to.id) && message.to.type === 'unregistered' && message.body === "registerViewer") {
           this.store.set({ viewer: message.data })
           localStorage.setItem('viewer', message.data)
+          const from = { id: message.data, type: 'viewer' }
+          client.service('messages').create({ to: message.from, from, body: 'success', data: 'Register viewer' })
         }
       }
     }

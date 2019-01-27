@@ -50,7 +50,7 @@
         event.preventDefault()
         const { viewerId, code } = this.get()
         client.service('messages')
-          .create({ from: user.id, to: code, body: 'registerViewer', data: viewerId })
+          .create({ from: { id: user.id, type: 'controller' }, to: { id: code, type: 'unregistered' }, body: 'registerViewer', data: viewerId })
           .then(res => {
             this.store.addMessage('Sent registration command.')
             this.set({ show: false, error: '' })

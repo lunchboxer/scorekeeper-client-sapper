@@ -1,0 +1,25 @@
+<script>
+  import client from '../utils/feathers'
+
+  export default {
+    oncreate() {
+      client.service('messages').on('created', this.controllerListener.bind(this))
+    },
+    ondestroy() {
+      client.service('messages').removeListener('created', this.controllerListener)
+    },
+    methods: {
+      controllerListener(message) {
+        switch (message.body) {
+          case 'success':
+            this.success(message)
+          default:
+            console.log(message)
+        }
+      },
+      success(message) {
+        this.store.addMessage(message.data + ' successful.')
+      }
+    }
+  }
+</script>

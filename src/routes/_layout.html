@@ -4,6 +4,7 @@
 
 {#if child.segment !== 'viewer'}
 {#if $login}
+<MessageListener />
 <Nav segment={child.segment} />
 {/if}
 <NotificationList></NotificationList>
@@ -27,7 +28,8 @@
       Nav: '../components/Nav.html',
       NotificationList: "../components/NotificationList.html",
       Login: "../components/Login.html",
-      Authenticating: "../components/Authenticating.html"
+      Authenticating: "../components/Authenticating.html",
+      MessageListener: "../components/MessageListener.html"
     },
     data() {
       return {
