@@ -1,34 +1,20 @@
-<!-- {#if stage}
-<svelte:component this="{stage}" />
-{:else}
-
-{#if !session}
-<p>Loading session...</p>
-{/if} -->
-
 {#if error}
 <h3 class="error">Error {error.code}</h3>
 <p class="error">{error.message}</p>
 {/if}
 
-<!-- {/if}
-{$attendances.length}
-{$session}  -->
-
 {#if $session.id}
 <ClassSessionLoader />
+{:else}
+<p>Loading session...</p>
 {/if}
 
 <script>
-  // import client from '../../utils/feathers.js'
-  // import ClassSessionActive from '../../components/ClassSessionActive.html'
-  // import ClassSessionStarted from '../../components/ClassSessionStarted.html'
-  // import ClassSessionResults from '../../components/ClassSessionResults.html'
+  import client from '../../utils/feathers.js'
 
   export default {
     data() {
       return {
-        group: [],
         error: ''
       }
     },
@@ -41,48 +27,12 @@
     },
     async oncreate() {
       const { sessionId } = this.get()
-      console.log("sessionId", sessionId)
       try {
         const session = await client.service('class-sessions').get(sessionId)
         this.store.set({ session })
       } catch (error) {
         this.set({ error })
       }
-      // this.attendanceSub = client.service('attendances').watch()
-      //   .find({ query: { session: sessionId } })
-      //   .subscribe(res => {
-      //     console.log('in attendancesSub sessionId', sessionId)
-      //     console.log('attendacesSub called', res)
-      //     this.store.set({ attendances: res.data })
-      //   })
-      // client.service('student-groups')
-      //   .get(session.studentGroupId)
-      //   .then(group => this.set({ group }))
-    },
-    ondestroy() {
-      if (this.sessionSub) this.sessionSub.unsubscribe()
-      // if (this.attendanceSub) this.attendanceSub.unsubscribe()
-    },
-    // computed: {
-    //   stage: ({ $session }) => {
-    //     if (!$session) return null
-    //     switch ($session.stage) {
-    //       case 'Active':
-    //         return ClassSessionActive
-    //       case 'Started':
-    //         return ClassSessionStarted
-    //       case 'Ended':
-    //         return ClassSessionResults
-    //       default:
-    //         return null
-    //     }
-    //   }
-    // },
-    // methods: {
-    //   async activateSession(id) {
-    //     client.service('class-sessions').patch(id, { stage: "Active" })
-    //     this.store.addMessage('Activated class session')
-    //   }
-    // }
+    }
   }
 </script>

@@ -52,7 +52,6 @@
         client.service('messages')
           .create({ from: user.id, to: code, body: 'registerViewer', data: viewerId })
           .then(res => {
-            console.log('completed')
             this.store.addMessage('Sent registration command.')
             this.set({ show: false, error: '' })
           })

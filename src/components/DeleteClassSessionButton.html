@@ -42,8 +42,8 @@
         const { id } = this.get()
         client.service("class-sessions").remove(id)
           .then(this.store.addMessage("Session successfully deleted"))
-          .catch(err => {
-            console.log(err)
+          .catch(error => {
+            console.error(error)
             this.store.addMessage("Session could not be deleted")
           })
       }

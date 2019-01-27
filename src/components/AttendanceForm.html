@@ -12,7 +12,6 @@
     },
     computed: {
       numPresent: ({ $attendances }) => {
-        console.log($attendances)
         const present = $attendances.filter(attendance => attendance.status === 'present')
         return present.length
       }

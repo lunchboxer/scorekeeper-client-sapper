@@ -88,7 +88,10 @@
         }
         client.service('student-groups').patch(id, { "name": newName })
           .then(this.store.addMessage('Class name successfully changed'))
-          .catch(err => console.log(err))
+          .catch(error => {
+            console.error(error)
+            this.store.addMessage('Change class name failed')
+          })
       },
       handleDelete(event) {
         event.preventDefault()
@@ -98,7 +101,10 @@
             this.set({ showConfirm: false })
             this.store.addMessage('Class successfully deleted')
           })
-          .catch(err => console.log(err))
+          .catch(error => {
+            console.error(error)
+            this.store.addMessage('Delete class failed')
+          })
       }
     },
     data() {

@@ -41,7 +41,7 @@
 {/if}
 
 <script>
-  import { formatDistance } from 'date-fns/esm'
+  import { formatDistance, formatRelative } from 'date-fns/esm'
   import client from '../utils/feathers'
 
   export default {
@@ -70,7 +70,7 @@
       endsString: ({ $session }) => {
         if (!$session) return ''
         const date = new Date($session.endsAt)
-        return date.toDateString() + ' ' + date.toLocaleTimeString()
+        return formatRelative(date, new Date())
       },
       absentStudents: ({ students, $attendances }) => {
         if (!$attendances || !students) return []
