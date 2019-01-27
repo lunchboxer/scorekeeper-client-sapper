@@ -5,7 +5,7 @@
 <h2>Class session results</h2>
 
 {#if $session}
-<p>{#if $activeGroup}{$activeGroup.name} class{/if} ended {endsDistance} ({endsString})</p>
+<p>{#if $activeGroup}{$activeGroup.name} class{/if} end time: {endsDistance} ({endsString})</p>
 {#if students.length}
 <table>
   <thead>
@@ -70,7 +70,7 @@
       endsString: ({ $session }) => {
         if (!$session) return ''
         const date = new Date($session.endsAt)
-        return date.toLocaleString()
+        return date.toDateString() + ' ' + date.toLocaleTimeString()
       },
       absentStudents: ({ students, $attendances }) => {
         if (!$attendances || !students) return []
