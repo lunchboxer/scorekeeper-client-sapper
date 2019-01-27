@@ -1,0 +1,114 @@
+<svelte:head>
+  <title>Results</title>
+</svelte:head>
+
+<h2>Class session results</h2>
+
+{#if $session}
+<p>{#if $activeGroup}{$activeGroup.name} class{/if} ended {endsDistance} ({endsString})</p>
+{#if students.length}
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th><i class="material-icons">star</i></th>
+      <th><i class="material-icons">thumb_down</i></th>
+      <th>notes</th>
+    </tr>
+  </thead>
+  <tbody>
+    {#each presentStudents as student (student.id)}
+    <ResultsRow {student} sessionId={$session.id} attendances={$attendances} />
+    {:else}
+    <tr>
+      <td>Loading students...</td>
+    </tr>
+    {/each}
+  </tbody>
+
+</table>
+{:else}
+<p>Loading students...</p>
+{/if}
+{:elseif error}
+<h3 class="error">Error {error.code}</h3>
+<p class="error">{error.message}</p>
+{/if}
+
+{#if absentStudents.length}
+<h3>Absent</h3>
+{absentStudentsNames}
+{/if}
+
+<script>
+  import { formatDistance } from 'date-fns/esm'
+  import client from '../utils/feathers'
+
+  export default {
+    components: {
+      ResultsRow: './ResultsRow.html'
+    },
+    data() {
+      return {
+        time: new Date(),
+        students: [],
+        error: '',
+      };
+    },
+    async oncreate() {
+      this.interval = setInterval(() => this.set({ time: new Date() }), 20000);
+      const { session, activeGroup, attendances } = this.store.get()
+      // try {
+      //   const students = await client.service('students').find({ query: group: session.studentGroupId })
+      //   this.set({ students: students.data })
+      // } catch (error) {
+      //   this.set({ error })
+      // }
+
+      // const { session, activeStudents, attendances } = this.store.get();
+      // if (activeStudents && !activeStudents.length) {
+      //   client.service('students')
+      //     .find({ query: { group: session.studentGroupId } })
+      //     .then(res => this.store.set({ activeStudents: res.data }))
+      // }
+    },
+    ondestroy() {
+      clearInterval(this.interval);
+    },
+    computed: {
+      students: ({ $activeGroup }) => {
+        if (!$activeGroup) return []
+        return $activeGroup.students
+      },
+      endsDistance: ({ $session, time }) => {
+        if (!$session) return ''
+        return formatDistance(new Date($session.endsAt), time, { addSuffix: true })
+      },
+      endsString: ({ $session }) => {
+        if (!$session) return ''
+        const date = new Date($session.endsAt)
+        return date.toLocaleString()
+      },
+      absentStudents: ({ students, $attendances }) => {
+        if (!$attendances || !students) return []
+        return students.filter(student => {
+          const myattendance = $attendances.find(attendance => attendance.student === student.id)
+          return myattendance && myattendance.status === 'absent'
+        })
+      },
+      absentStudentsNames: ({ absentStudents }) => {
+        const names = absentStudents.map(student => {
+          return student.englishName || student.chineseName + '(' + student.pinyinName + ')'
+        })
+        return names.join(', ')
+      },
+      presentStudents: ({ students, $attendances }) => {
+        if (!$attendances || !students) return []
+        return students.filter(student => {
+          const myattendance = $attendances.find(attendance => attendance.student === student.id)
+          return myattendance && myattendance.status !== 'absent'
+        })
+      },
+    }
+  }
+</script>

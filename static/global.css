@@ -21,6 +21,7 @@ mostly the addition of custom property colors, so that components can use them t
   --background: black;
   --alt-background: #f4f5f6;
   --color-on-primary: #ffffff;
+  --error-color: #ff3333;
 }
 
 *,
@@ -53,6 +54,10 @@ blockquote {
 
 blockquote *:last-child {
   margin-bottom: 0;
+}
+
+.error {
+  color: var(--error-color);
 }
 
 .button,

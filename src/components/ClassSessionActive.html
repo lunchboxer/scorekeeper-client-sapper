@@ -1,12 +1,15 @@
-{#if $activeGroup.id}
+{#if $session}
+{#if $activeGroup}
 <h2>{$activeGroup.name} Class Session Active</h2>
 <p class:late="$session.startsAt < time.toJSON()">Scheduled start time: {distance}</p>
 
-{#if !$activeStudents.length}
+{#if !students.length}
 <p>There are no students in this class. <a href="students">Add some</a>.</p>
 {:else}
 <button on:click="startClass($session.id)">Start class</button>
-<AttendanceForm />
+<AttendanceForm {students} />
+{/if}
+
 {/if}
 
 {/if}
@@ -26,24 +29,25 @@
       AttendanceForm: './AttendanceForm.html'
     },
     oncreate() {
-      const { session } = this.store.get()
+      const { session, activeGroup, attendances } = this.store.get()
       // we can add and remove students to the class at this stage,
       // but we don't want student dissapearing in the middle of class
       // so only subscribe and make changes here in Active stage
-      const students = client.service('students').watch()
+      this.studentsSub = client.service('students').watch()
         .find({ query: { group: session.studentGroupId } })
-        .subscribe(res => this.store.set({ activeStudents: res.data }))
-      this.on('destroy', students.unsubscribe)
+        .subscribe(res => this.set({ students: res.data }))
       this.interval = setInterval(() => {
         this.set({ time: new Date() })
       }, 2000);
     },
     ondestroy() {
       clearInterval(this.interval)
+      if (this.studentsSub) this.studentsSub.unsubscribe()
     },
     data() {
       return {
         time: new Date(),
+        students: []
       }
     },
     computed: {
@@ -52,8 +56,9 @@
     methods: {
       startClass(id) {
         // mark others absent
-        const { activeStudents, attendances, session } = this.store.get()
-        const unmarkedStudents = activeStudents.filter(student => {
+        const { attendances, session } = this.store.get()
+        const { students } = this.get()
+        const unmarkedStudents = students.filter(student => {
           return !attendances.find(attendance => attendance.student === student.id)
         })
         const newRecords = unmarkedStudents.map(student => {

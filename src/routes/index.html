@@ -3,7 +3,7 @@
 </svelte:head>
 
 {#if $session.id}
-<ClassSessionLoader id={$session.id} />
+<ClassSessionLoader />
 {:else}
 <h1>Dashboard</h1>
 <ClassSessionsPicker />

@@ -35,6 +35,7 @@
 <script>
   import client from '../utils/feathers.js'
   import { formatDistance } from 'date-fns/esm'
+  import { goto } from '../../__sapper__/client.js'
 
   export default {
     data() {
@@ -80,6 +81,7 @@
     methods: {
       endClass(id) {
         client.service('class-sessions').patch(id, { stage: "Ended" })
+        goto(`/results/${id}`)
       }
     }
   }

@@ -26,6 +26,7 @@
       this.classSessions = client.service('class-sessions').watch()
         .find({
           query: {
+            stage: { $ne: 'Ended' },
             startsAt: { $lte: later.toJSON() },
             endsAt: { $gte: earlier.toJSON() }
           }

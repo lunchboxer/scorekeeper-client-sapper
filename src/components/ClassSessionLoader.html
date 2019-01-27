@@ -1,5 +1,5 @@
 {#if stage}
-<svelte:component this="{stage}" />
+<svelte:component this={stage} />
 {:else}
 <h2>No class session found</h2>
 {/if}
@@ -8,11 +8,12 @@
   import client from '../utils/feathers.js'
   import ClassSessionActive from './ClassSessionActive.html'
   import ClassSessionStarted from './ClassSessionStarted.html'
-  import ClassSessionEnded from './ClassSessionEnded.html'
+  import ClassSessionResults from './ClassSessionResults.html'
 
   export default {
     oncreate() {
       const { session } = this.store.get()
+      console.log(session)
       const { id } = session
       if (!id) {
         this.store.set({ session: {} })
@@ -23,6 +24,7 @@
         .subscribe(res => this.store.set({ attendances: res.data }))
       this.sessions = client.service('class-sessions').watch()
         .get(id).subscribe(session => {
+          console.log('got sessions watcher triggered', session)
           if (session.stage === 'Inactive') {
             this.activateSession(id)
           }
@@ -41,7 +43,7 @@
           case 'Started':
             return ClassSessionStarted
           case 'Ended':
-            return ClassSessionEnded
+            return ClassSessionResults
           default:
             return null
         }
@@ -49,11 +51,6 @@
     },
     methods: {
       async activateSession(id) {
-        // there can be only one active session
-        await client.service('class-sessions')
-          .patch(null, { stage: "Inactive" }, { query: { stage: "Active" } })
-        await client.service('class-sessions')
-          .patch(null, { stage: "Ended" }, { query: { stage: "Started" } })
         client.service('class-sessions').patch(id, { stage: "Active" })
         this.store.addMessage('Activated class session')
       }

@@ -55,6 +55,8 @@
         event.preventDefault()
         const { attendance, status, student, started } = this.get()
         const { session } = this.store.get()
+        console.log('att', attendance)
+        console.log('status', status)
         if (status === 'none') {
           const now = new Date()
           client.service('attendances').create({ status: "present", student: student.id, session: session.id, arrivedAt: now })

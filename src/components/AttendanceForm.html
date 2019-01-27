@@ -1,7 +1,7 @@
 <h3>Attendance</h3>
 
-<p>{numPresent} out of {$activeStudents.length} students present.</p>
-{#each $activeStudents as student (student.id)}
+<p>{numPresent} out of {students.length} students present.</p>
+{#each students as student (student.id)}
 <AttendanceRow {student} />
 {/each}
 
@@ -12,6 +12,7 @@
     },
     computed: {
       numPresent: ({ $attendances }) => {
+        console.log($attendances)
         const present = $attendances.filter(attendance => attendance.status === 'present')
         return present.length
       }

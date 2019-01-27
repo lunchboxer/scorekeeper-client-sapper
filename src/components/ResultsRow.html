@@ -9,9 +9,7 @@
   <td>{negativeTally}</td>
   <td>
     {#if attendance.status !== 'present'}
-    <span class="notpresent"
-      >{attendance.status}: {getTime(attendance.arrivedAt)}</span
-    >
+    <span class="notpresent">{attendance.status}: {getTime(attendance.arrivedAt)}</span>
     {/if}
   </td>
 </tr>
@@ -32,13 +30,12 @@
   import client from "../utils/feathers";
   export default {
     oncreate() {
-      const { student } = this.get();
-      const { session } = this.store.get();
-      if (session) {
+      const { student, sessionId } = this.get();
+      if (sessionId) {
         client
           .service("points")
           .find({
-            query: { studentId: student.id, classSessionId: session.id }
+            query: { studentId: student.id, classSessionId: sessionId }
           })
           .then(res => this.set({ points: res.data }));
       }
@@ -49,9 +46,9 @@
       };
     },
     computed: {
-      attendance: ({ student, $attendances }) => {
-        if (!$attendances) return null;
-        return $attendances.find(
+      attendance: ({ student, attendances }) => {
+        if (!attendances) return null;
+        return attendances.find(
           attendance => attendance.student === student.id
         );
       },
@@ -63,8 +60,8 @@
         !points.length
           ? 0
           : points
-              .filter(point => point.value < 0)
-              .reduce((tally, point) => tally + point.value, 0)
+            .filter(point => point.value < 0)
+            .reduce((tally, point) => tally + point.value, 0)
     },
     helpers: {
       getTime(date) {

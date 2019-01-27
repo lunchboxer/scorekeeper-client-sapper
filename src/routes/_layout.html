@@ -1,3 +1,7 @@
+{#if preloading}
+<div>Loading...</div>
+{/if}
+
 {#if child.segment !== 'viewer'}
 {#if $login}
 <Nav segment={child.segment} />
@@ -34,6 +38,10 @@
       this.authenticate()
       client.on('authenticated', this.authenticatedListener.bind(this))
       client.on('logout', this.logoutListener.bind(this))
+    },
+    ondestroy() {
+      client.removeListener('authenticated', this.authenticatedListener)
+      client.removeListener('logout', this.logoutListener)
     },
     methods: {
       async authenticatedListener(res) {
