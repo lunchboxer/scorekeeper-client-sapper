@@ -1,5 +1,5 @@
 {#if filteredSessions.length}
-<h3>Get ready for class!</h3>
+<h3>Upcoming or ongoing lessons</h3>
 {#each filteredSessions as session (session.id)}
 <ClassSessionsPickerItem {session} {time} />
 {/each}

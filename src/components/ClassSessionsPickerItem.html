@@ -1,10 +1,12 @@
-<li on:click="pickSession(session)">
-  <div class="main">
-    <span class="group">{group ? group.name + ' class' : 'No class'}</span>
-    <span class="distance">{distance}</span>
-  </div>
-  <span class="time">{startString}-{endTime}</span>
-</li>
+<a href="/sessions/{session.id}">
+  <li>
+    <div class="main">
+      <span class="group">{group ? group.name + ' class' : 'No class'}</span>
+      <span class="distance">{distance}</span>
+    </div>
+    <span class="time">{startString}-{endTime}</span>
+  </li>
+</a>
 
 <style>
   .main {

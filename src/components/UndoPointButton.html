@@ -1,5 +1,6 @@
 {#if $recentPoint}
-<button on:click="handleUndo(event)"><i class="material-icons">undo</i>{$recentPoint.value} point to {student}</button>
+<button class="button-outline" on:click="handleUndo(event)"><i class="material-icons">undo</i>{$recentPoint.value}
+  point to {student}</button>
 {/if}
 
 <style>

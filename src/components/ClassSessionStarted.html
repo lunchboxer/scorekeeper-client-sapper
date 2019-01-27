@@ -81,7 +81,6 @@
     methods: {
       endClass(id) {
         client.service('class-sessions').patch(id, { stage: "Ended" })
-        goto(`/results/${id}`)
       }
     }
   }
