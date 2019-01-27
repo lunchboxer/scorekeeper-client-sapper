@@ -57,29 +57,12 @@
     },
     async oncreate() {
       this.interval = setInterval(() => this.set({ time: new Date() }), 20000);
-      const { session, activeGroup, attendances } = this.store.get()
-      // try {
-      //   const students = await client.service('students').find({ query: group: session.studentGroupId })
-      //   this.set({ students: students.data })
-      // } catch (error) {
-      //   this.set({ error })
-      // }
-
-      // const { session, activeStudents, attendances } = this.store.get();
-      // if (activeStudents && !activeStudents.length) {
-      //   client.service('students')
-      //     .find({ query: { group: session.studentGroupId } })
-      //     .then(res => this.store.set({ activeStudents: res.data }))
-      // }
     },
     ondestroy() {
       clearInterval(this.interval);
     },
     computed: {
-      students: ({ $activeGroup }) => {
-        if (!$activeGroup) return []
-        return $activeGroup.students
-      },
+      students: ({ $activeGroup }) => !$activeGroup ? [] : $activeGroup.students,
       endsDistance: ({ $session, time }) => {
         if (!$session) return ''
         return formatDistance(new Date($session.endsAt), time, { addSuffix: true })
