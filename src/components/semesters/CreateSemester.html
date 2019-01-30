@@ -1,0 +1,73 @@
+<h2>New semester</h2>
+
+<form on:submit="handleSubmit(event)" novalidate ref:form>
+
+  <fieldset>
+
+    <FancyTextInput label="Name" required description="a description of the period, i.e. &quot;Autumn &#8217;95&quot;"
+      name="chineseNameField" bind:value=name />
+
+    <FancyTextInput type="date" label="Start date" required description="Date semester begins" name="startDateField"
+      bind:value=startDate />
+
+    <FancyTextInput type="date" label="End date" required description="Date semester ends" name="endDateField"
+      bind:value=endDate />
+
+    <br>
+    <input class="button-primary" type="submit" value="Save">
+    {#if showCreateSemester}
+    <input class="button button-outline" type="reset" value="Cancel" on:click="set({showCreateSemester: false})">
+    {:else} <input class="button button-outline" type="reset" value="Reset form">
+    {/if}
+    {#if error}
+    <p class="error">{error}</p>
+    {/if}
+  </fieldset>
+</form>
+
+<script>
+  import client from '../../utils/feathers'
+  export default {
+    data() {
+      return {
+        name: '',
+        startDate: '',
+        endDate: '',
+        error: '',
+        showCreateSemester: false
+      }
+    },
+    components: {
+      FancyTextInput: '../FancyTextInput.html'
+    },
+    methods: {
+      async handleSubmit(event) {
+        event.preventDefault()
+        const isValid = this.refs.form.checkValidity()
+        if (!isValid) {
+          this.store.addMessage("Please fix form errors first.")
+          return
+        }
+        const submitButton = event.target.querySelector("input[type=submit]")
+        submitButton.disabled = true
+        submitButton.value = "Saving ..."
+        const { name, startDate, endDate } = this.get()
+        try {
+          const newSemester = await client.service("semesters").create({ name, startDate, endDate })
+          this.set({ error: '' })
+          this.refs.form.reset()
+          this.store.addMessage(`Saved semester '${name}'`)
+          this.store.set({ semesters: [...this.store.get().semesters, newSemester] })
+        } catch (error) {
+          this.set({ error })
+          this.store.addMessage(`Failed to save '${name}'`)
+        } finally {
+          if (submitButton) {
+            submitButton.disabled = false
+            submitButton.value = "Save"
+          }
+        }
+      }
+    }
+  }
+</script>

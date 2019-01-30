@@ -5,7 +5,17 @@
 <h1>Class sessions</h1>
 
 {#if $login}
+<SemestersLoader />
+{#if $semestersLoading}
+<p>Loading semesters ...</p>
+{:else}
+{#if !$semesters || !$semesters.length}
+<p>You must create a semester first.</p>
+<CreateSemester />
+{:else}
 <ClassSessionsList />
+{/if}
+{/if}
 {:else}
 <p><a href="login">Log in</a> to access the class sessions.</p>
 {/if}
@@ -13,7 +23,9 @@
 <script>
   export default {
     components: {
-      ClassSessionsList: '../components/ClassSessionsList.html'
+      ClassSessionsList: '../components/ClassSessionsList.html',
+      SemestersLoader: '../components/semesters/SemestersLoader.html',
+      CreateSemester: '../components/semesters/CreateSemester.html'
     }
   }
 </script>

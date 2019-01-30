@@ -4,6 +4,7 @@
 
 {#if child.segment !== 'viewer'}
 {#if $login}
+<SemestersLoader />
 <MessageListener />
 <Nav segment={child.segment} />
 {/if}
@@ -25,11 +26,12 @@
 
   export default {
     components: {
-      Nav: '../components/Nav.html',
+      Nav: "../components/Nav.html",
       NotificationList: "../components/NotificationList.html",
       Login: "../components/Login.html",
       Authenticating: "../components/Authenticating.html",
-      MessageListener: "../components/MessageListener.html"
+      MessageListener: "../components/MessageListener.html",
+      SemestersLoader: "../components/semesters/SemestersLoader.html"
     },
     data() {
       return {

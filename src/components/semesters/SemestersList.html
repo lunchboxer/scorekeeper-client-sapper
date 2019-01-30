@@ -1,0 +1,22 @@
+{#if $semesters && $semesters.length }
+<div class="semester-list">
+  <p>There are {$semesters.length} semesters in the system.</p>
+  {#each $semesters as semester(semester.id)}
+  <SemesterListRow {semester} />
+  {/each}
+</div>
+{/if}
+
+<style>
+  .semester-list {
+    margin-top: 2rem;
+  }
+</style>
+
+<script>
+  export default {
+    components: {
+      SemesterListRow: './SemesterListRow.html'
+    }
+  }
+</script>

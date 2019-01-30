@@ -1,0 +1,34 @@
+<h1>Semesters</h1>
+
+<SemestersLoader />
+
+{#if $semestersLoading}
+<p>Loading semesters...</p>
+{/if}
+
+{#if !$semesters || !$semesters.length}
+<p>There are no semesters in the system. Add one below.</p>
+<CreateSemester />
+{:elseif showCreateSemester}
+<CreateSemester bind:showCreateSemester />
+{:else}
+<button class="button-outline" on:click="set({showCreateSemester:true})">&plus; New semester</button>
+{/if}
+
+<SemestersList />
+
+<script>
+  export default {
+    data() {
+      return { showCreateSemester: false }
+    },
+    oncreate() {
+
+    },
+    components: {
+      CreateSemester: '../components/semesters/CreateSemester.html',
+      SemestersLoader: '../components/semesters/SemestersLoader.html',
+      SemestersList: '../components/semesters/SemestersList.html'
+    }
+  }
+</script>

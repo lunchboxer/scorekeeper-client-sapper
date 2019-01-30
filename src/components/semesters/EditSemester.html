@@ -1,0 +1,73 @@
+<form on:submit="handleEdit(event)" novalidate ref:form>
+
+  <fieldset>
+
+    <FancyTextInput label="Name" required description="a description of the period, i.e. &quot;Autumn &#8217;95&quot;"
+      name="chineseNameField" bind:value=semester.name />
+
+    <FancyTextInput type="date" label="Start date" required description="Date semester begins" name="startDateField"
+      bind:value=semester.startDate />
+
+    <FancyTextInput type="date" label="End date" required description="Date semester ends" name="endDateField"
+      bind:value=semester.endDate />
+
+    <br>
+    <input class="button-primary" type="submit" value="Save">
+    <input class="button button-outline" type="reset" value="Cancel" on:click="set({showEdit: false})">
+
+    {#if error}
+    <p class="error">{error}</p>
+    {/if}
+  </fieldset>
+</form>
+
+<script>
+  import client from '../../utils/feathers'
+  export default {
+    data() {
+      return {
+        error: '',
+        showEdit: false
+      }
+    },
+    components: {
+      FancyTextInput: '../FancyTextInput.html'
+    },
+    methods: {
+      async handleEdit(event) {
+        event.preventDefault()
+        const isValid = this.refs.form.checkValidity()
+        if (!isValid) {
+          this.store.addMessage("Please fix form errors first.")
+          return
+        }
+        const submitButton = event.target.querySelector("input[type=submit]")
+        submitButton.disabled = true
+        submitButton.value = "Saving ..."
+        const { name, startDate, endDate, id } = this.get().semester
+        try {
+          const newSemester = await client.service("semesters").patch(id, { name, startDate, endDate })
+          this.store.addMessage(`Saved semester '${name}'`)
+          this.updateSemesters(newSemester)
+          this.set({ showEdit: false })
+        } catch (error) {
+          this.set({ error })
+          this.store.addMessage(`Failed to save '${name}'`)
+        } finally {
+          if (submitButton) {
+            submitButton.disabled = false
+            submitButton.value = "Save"
+          }
+        }
+      },
+      updateSemesters(newSemester) {
+        const { semesters } = this.store.get()
+        const updatedSemesters = semesters.map(semester => {
+          if (semester.id !== newSemester.id) return semester
+          return newSemester
+        })
+        this.store.set({ semesters: updatedSemesters })
+      }
+    }
+  }
+</script>

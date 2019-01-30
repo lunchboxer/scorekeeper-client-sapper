@@ -1,0 +1,18 @@
+<script>
+  import client from '../../utils/feathers'
+
+  export default {
+    async oncreate() {
+      this.store.set({ semestersLoading: true })
+      // just load all of them, should still be small
+      try {
+        const result = await client.service("semesters").find({ query: { $limit: 100 } })
+        this.store.set({ semesters: result.data, semestersLoading: false })
+      }
+      catch (error) {
+        console.error(error)
+        this.store.set({ semestersLoading: false })
+      }
+    }
+  }
+</script>

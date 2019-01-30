@@ -1,0 +1,86 @@
+<li>
+  <div class="firstrow">
+    <div class="info">
+      <span class="name">{semester.name}</span>
+      <span class="date">{startDate} to {endDate}</span>
+    </div>
+    <div class="buttons">
+      <i class="material-icons" on:click="set({showEdit: !showEdit})">edit</i>
+      <i class="material-icons" on:click="set({confirmDelete: !confirmDelete})">remove_circle_outline</i>
+    </div>
+
+  </div>
+
+  <div class="action">
+    {#if confirmDelete}
+    <DeleteSemester {semester} bind:confirmDelete />
+    {/if}
+    {#if showEdit}
+    <EditSemester {semester} bind:showEdit />
+    {/if}
+  </div>
+</li>
+
+
+<style>
+  li {
+    list-style: none;
+  }
+
+  .firstrow {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .name {
+    font-size: 1.8rem;
+    font-weight: bold;
+  }
+
+  .date {
+    white-space: pre;
+  }
+
+  .buttons {
+    display: flex;
+    align-items: center;
+  }
+
+  i {
+    margin: 0.5rem;
+    padding: 0.2rem 0.5rem;
+    cursor: pointer;
+  }
+
+  i:hover {
+    color: var(--primary-color);
+  }
+</style>
+
+<script>
+  import client from '../../utils/feathers'
+  export default {
+    components: {
+      DeleteSemester: './DeleteSemester.html',
+      EditSemester: './EditSemester.html'
+    },
+    data() {
+      return {
+        confirmDelete: false,
+        error: '',
+        showEdit: false
+      }
+    },
+    computed: {
+      startDate: ({ semester }) => {
+        const date = new Date(semester.startDate)
+        return date.toDateString()
+      },
+      endDate: ({ semester }) => {
+        const date = new Date(semester.endDate)
+        return date.toDateString()
+      }
+    }
+  }
+</script>

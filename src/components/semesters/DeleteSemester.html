@@ -1,0 +1,36 @@
+<button on:click="handleDelete(semester.id)" id="delete" ref:delete>Delete</button>
+<button class="button-outline" on:click="set({confirmDelete:false})">Cancel</button>
+
+<script>
+  import client from '../../utils/feathers'
+  export default {
+    data() {
+      return {
+        confirmDelete: false,
+        error: ''
+      }
+    },
+    methods: {
+      async handleDelete(id) {
+        this.refs.delete.disabled = true
+        this.refs.delete.innerText = 'Deleting ...'
+        try {
+          const deleted = await client.service('semesters').remove(id)
+          const { semesters } = this.store.get()
+          const filteredSemesters = semesters.filter(semester => semester.id !== deleted.id)
+          this.store.set({ semesters: filteredSemesters })
+          this.set({ confirmDelete: false, error: '' })
+          this.store.addMessage(`${deleted.name} deleted successfully.`)
+        } catch (error) {
+          this.set({ error })
+          this.store.addMessage('Semester could not be deleted.')
+        } finally {
+          if (this.refs.delete) {
+            this.refs.delete.disabled = false
+            this.refs.delete.innerText = 'Delete'
+          }
+        }
+      }
+    }
+  }
+</script>
