@@ -21,6 +21,10 @@
 <input type='datetime-local' {name} {required} aria-describedby={descriptionId} on:input="checkValidity()" on:invalid="invalidHandler(event)"
   class:error="error" on:focus="set({showDescription: !showDescription})" on:blur="set({showDescription: !showDescription})"
   bind:value ref:input />
+{:elseif type === 'date'}
+<input type='date' {name} {required} aria-describedby={descriptionId} on:input="checkValidity()" on:invalid="invalidHandler(event)"
+  class:error="error" on:focus="set({showDescription: !showDescription})" on:blur="set({showDescription: !showDescription})"
+  bind:value ref:input />
 {/if}
 {#if description && showDescription}
 <div id={descriptionId} class="description">
@@ -35,7 +39,7 @@
 
   .error {
     border-color: red;
-    background-color: #FEE;
+    /* background-color: #FEE; */
   }
 
   .description {
