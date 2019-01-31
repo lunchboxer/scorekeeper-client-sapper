@@ -1,7 +1,8 @@
 {#if showinput}
 <h3>New Class for {$semester.name}</h3>
 <form on:submit="handleSubmit(event)" novalidate ref:form>
-  <FancyTextInput ref:input label="Class name" pattern="^\w+$" maxlength="20" required name="nameField" bind:value=name description="No need to include 'class'" />
+  <FancyTextInput ref:input label="Class name" pattern="^\w+$" maxlength="20" required name="nameField" bind:value=name
+    description="No need to include 'class'" />
   <br>
   <input type="submit" ref:submit value="Create" />
   <input type="reset" on:click="set({showinput: false, name: ''})" class="button-outline" value="Cancel" />
@@ -28,29 +29,29 @@
       }
     },
     methods: {
-      handleSubmit(event) {
+      async handleSubmit(event) {
         event.preventDefault()
         const isValid = this.refs.form.checkValidity()
         if (!isValid) {
           this.store.addMessage("Please fix form errors first.")
           return
         }
-        event.target.querySelector("input[type=submit]").disabled = true
+        this.refs.submit.disabled = true
+        this.refs.submit.value = 'Saving ...'
         const { name } = this.get()
         const { semester } = this.store.get()
-        client
-          .service("groups")
-          .create({ name , semester: semester._id})
-          .then(() => {
-            this.refs.submit.disabled = false
-            this.store.addMessage("New class added successfully")
-            this.set({ error: '', showinput: false, name: '' })
-          })
-          .catch(error => {
-            this.refs.submit.disabled = false
-            this.set({ error: error.message })
-            this.store.addMessage("There was a problem creating the class.")
-          })
+        try {
+          const newClass = await client.service("groups")
+            .create({ name, semester: semester._id })
+          this.store.addMessage(newClass.name + " class added successfully")
+          this.set({ error: '', showinput: false, name: '' })
+        } catch (error) {
+          this.set({ error: error.message })
+          this.store.addMessage("There was a problem creating the class.")
+        } finally {
+          this.refs.submit.disabled = false
+          this.refs.submit.value = 'Create'
+        }
       }
     }
   }
