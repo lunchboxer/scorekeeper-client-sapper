@@ -1,0 +1,40 @@
+<button on:click="set({show:!show})">Switch semester</button>
+{#if show}
+<Modal on:close='set({show:false})' title="Choose a semester">
+  <select on:change="handleSelect(event)" bind:value=chosenId>
+    {#each $semesters as semester}
+    <option value="{semester._id}">{semester.name}</option>
+    {/each}
+  </select>
+</Modal>
+{/if}
+
+<style>
+  select {
+    max-width: 40rem;
+  }
+</style>
+
+<script>
+  export default {
+    data() {
+      return {
+        show: false,
+        chosenId: null
+      }
+    },
+    components: {
+      Modal: '../Modal.html'
+    },
+    methods: {
+      handleSelect(event) {
+        const chosenId = event.target.value
+        const { semesters } = this.store.get()
+        const chosenSemester = semesters.find(semester => semester._id === chosenId)
+        this.store.set({ chosenSemester })
+        this.store.addMessage('Switched to ' + chosenSemester.name)
+        this.set({ show: false })
+      }
+    }
+  }
+</script>

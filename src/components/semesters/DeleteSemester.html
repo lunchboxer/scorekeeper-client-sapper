@@ -1,4 +1,4 @@
-<button on:click="handleDelete(semester.id)" id="delete" ref:delete>Delete</button>
+<button on:click="handleDelete(semester._id)" id="delete" ref:delete>Delete</button>
 <button class="button-outline" on:click="set({confirmDelete:false})">Cancel</button>
 
 <script>
@@ -17,7 +17,7 @@
         try {
           const deleted = await client.service('semesters').remove(id)
           const { semesters } = this.store.get()
-          const filteredSemesters = semesters.filter(semester => semester.id !== deleted.id)
+          const filteredSemesters = semesters.filter(semester => semester._id !== deleted._id)
           this.store.set({ semesters: filteredSemesters })
           this.set({ confirmDelete: false, error: '' })
           this.store.addMessage(`${deleted.name} deleted successfully.`)

@@ -57,7 +57,10 @@
           this.set({ error: '' })
           this.refs.form.reset()
           this.store.addMessage(`Saved semester '${name}'`)
-          this.store.set({ semesters: [...this.store.get().semesters, newSemester] })
+          const semesters = [...this.store.get().semesters, newSemester].sort((a, b) => {
+            return new Date(b.startDate) - new Date(a.startDate)
+          })
+          this.store.set({ semesters })
         } catch (error) {
           this.set({ error })
           this.store.addMessage(`Failed to save '${name}'`)

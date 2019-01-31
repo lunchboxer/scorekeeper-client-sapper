@@ -29,7 +29,7 @@
     <AddStudentCard {groupId} />
 
     {#if students.length}
-    {#each students as student (student.id)}
+    {#each students as student (student._id)}
     <StudentListItem {student} />
     {/each}
     {/if}
@@ -81,12 +81,12 @@
       },
       handleBlur(event) {
         const newName = event.target.innerText
-        const { id, name } = this.get()
+        const { _id, name } = this.get()
         if (newName === name || newName === '') {
           event.target.innerText = name
           return false
         }
-        client.service('student-groups').patch(id, { "name": newName })
+        client.service('groups').patch(_id, { "name": newName })
           .then(this.store.addMessage('Class name successfully changed'))
           .catch(error => {
             console.error(error)
@@ -96,7 +96,7 @@
       handleDelete(event) {
         event.preventDefault()
         const { groupId } = this.get()
-        client.service('student-groups').remove(groupId)
+        client.service('groups').remove(groupId)
           .then(() => {
             this.set({ showConfirm: false })
             this.store.addMessage('Class successfully deleted')

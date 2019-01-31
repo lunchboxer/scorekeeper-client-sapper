@@ -17,7 +17,7 @@ const store = new StoreWithNotifications({
 })
 
 store.compute('activeGroup', ['session', 'groups'], (session, groups) => {
-  return groups.find(group => group.id === session.studentGroupId)
+  return groups.find(group => group._id === session.studentGroupId)
 })
 
 store.compute('currentSemester', ['semesters'], (semesters) => {
@@ -38,5 +38,23 @@ store.compute('nextSemester', ['semesters'], (semesters) => {
     return startDate > now
   })
 })
+
+// prioritize now, then next, then most recent
+store.compute('defaultSemester',
+  ['semesters', 'nextSemester', 'currentSemester'],
+  (semesters, currentSemester, nextSemester) => {
+    if (!semesters.length) return null
+    if (semesters.length === 1) return semesters[0]
+    // return most recent if no next
+    if (!currentSemester && !nextSemester) return semesters[0]
+    if (!currentSemester && nextSemester) return nextSemester
+    return currentSemester
+  })
+
+store.compute('semester',
+  ['chosenSemester', 'defaultSemester'],
+  (chosenSemester, defaultSemester) => {
+    return chosenSemester || defaultSemester
+  })
 
 export default store

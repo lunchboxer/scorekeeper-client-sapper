@@ -1,6 +1,7 @@
 {#if showinput}
+<h3>New Class for {$semester.name}</h3>
 <form on:submit="handleSubmit(event)" novalidate ref:form>
-  <FancyTextInput ref:input label="New class name" pattern="^\w+$" maxlength="20" required name="nameField" bind:value=name />
+  <FancyTextInput ref:input label="Class name" pattern="^\w+$" maxlength="20" required name="nameField" bind:value=name description="No need to include 'class'" />
   <br>
   <input type="submit" ref:submit value="Create" />
   <input type="reset" on:click="set({showinput: false, name: ''})" class="button-outline" value="Cancel" />
@@ -36,9 +37,10 @@
         }
         event.target.querySelector("input[type=submit]").disabled = true
         const { name } = this.get()
+        const { semester } = this.store.get()
         client
-          .service("student-groups")
-          .create({ name })
+          .service("groups")
+          .create({ name , semester: semester._id})
           .then(() => {
             this.refs.submit.disabled = false
             this.store.addMessage("New class added successfully")

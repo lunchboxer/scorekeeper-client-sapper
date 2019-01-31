@@ -45,7 +45,7 @@
       }
     },
     computed: {
-      attendance: ({ $attendances, student }) => $attendances.find(attendance => attendance.student === student.id),
+      attendance: ({ $attendances, student }) => $attendances.find(attendance => attendance.student === student._id),
       status: ({ attendance }) => {
         return attendance ? attendance.status : 'none'
       }
@@ -57,12 +57,12 @@
         const { session } = this.store.get()
         if (status === 'none') {
           const now = new Date()
-          client.service('attendances').create({ status: "present", student: student.id, session: session.id, arrivedAt: now })
+          client.service('attendances').create({ status: "present", student: student._id, session: session._id, arrivedAt: now })
         } else {
           const newStatus = (status === "present") ? "absent"
             : started ? 'late' : "present"
           const arrivedAt = (newStatus === "present" || newStatus === "late") ? new Date() : null
-          client.service('attendances').patch(attendance.id, { status: newStatus, arrivedAt })
+          client.service('attendances').patch(attendance._id, { status: newStatus, arrivedAt })
         }
       }
     }

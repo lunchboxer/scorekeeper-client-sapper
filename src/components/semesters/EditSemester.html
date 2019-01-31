@@ -6,10 +6,10 @@
       name="chineseNameField" bind:value=semester.name />
 
     <FancyTextInput type="date" label="Start date" required description="Date semester begins" name="startDateField"
-      bind:value=semester.startDate />
+      bind:value=startDate />
 
     <FancyTextInput type="date" label="End date" required description="Date semester ends" name="endDateField"
-      bind:value=semester.endDate />
+      bind:value=endDate />
 
     <br>
     <input class="button-primary" type="submit" value="Save">
@@ -24,10 +24,19 @@
 <script>
   import client from '../../utils/feathers'
   export default {
+    oncreate() {
+      console.log(this.get().semester)
+      this.set({
+        endDate: this.get().semester.endDate.slice(0, 10),
+        startDate: this.get().semester.startDate.slice(0, 10)
+      })
+    },
     data() {
       return {
         error: '',
-        showEdit: false
+        showEdit: false,
+        endDate: '',
+        startDate: ''
       }
     },
     components: {
@@ -44,9 +53,10 @@
         const submitButton = event.target.querySelector("input[type=submit]")
         submitButton.disabled = true
         submitButton.value = "Saving ..."
-        const { name, startDate, endDate, id } = this.get().semester
+        const { name, _id } = this.get().semester
+        const { startDate, endDate } = this.get()
         try {
-          const newSemester = await client.service("semesters").patch(id, { name, startDate, endDate })
+          const newSemester = await client.service("semesters").patch(_id, { name, startDate, endDate })
           this.store.addMessage(`Saved semester '${name}'`)
           this.updateSemesters(newSemester)
           this.set({ showEdit: false })
@@ -63,7 +73,7 @@
       updateSemesters(newSemester) {
         const { semesters } = this.store.get()
         const updatedSemesters = semesters.map(semester => {
-          if (semester.id !== newSemester.id) return semester
+          if (semester._id !== newSemester._id) return semester
           return newSemester
         })
         this.store.set({ semesters: updatedSemesters })

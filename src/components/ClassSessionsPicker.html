@@ -1,6 +1,6 @@
 {#if filteredSessions.length}
 <h3>Upcoming or ongoing lessons</h3>
-{#each filteredSessions as session (session.id)}
+{#each filteredSessions as session (session._id)}
 <ClassSessionsPickerItem {session} {time} />
 {/each}
 {:else}
@@ -23,18 +23,18 @@
       const hours = now.getHours()
       earlier.setMinutes(minutes - 30)
       later.setHours(hours + 24)
-      this.classSessions = client.service('class-sessions').watch()
-        .find({
-          query: {
-            stage: { $ne: 'Ended' },
-            startsAt: { $lte: later.toJSON() },
-            endsAt: { $gte: earlier.toJSON() }
-          }
-        }).subscribe(res => {
-          const sessions = res.data.sort((a, b) => a.startsAt > b.startsAt)
-          this.set({ sessions })
-        })
-      client.service('student-groups').find().then(groups => {
+      // this.classSessions = client.service('class-sessions').watch()
+      //   .find({
+      //     query: {
+      //       stage: { $ne: 'Ended' },
+      //       startsAt: { $lte: later.toJSON() },
+      //       endsAt: { $gte: earlier.toJSON() }
+      //     }
+      //   }).subscribe(res => {
+      //     const sessions = res.data.sort((a, b) => a.startsAt > b.startsAt)
+      //     this.set({ sessions })
+      //   })
+      client.service('groups').find().then(groups => {
         const sortedGroups = groups.data.sort((a, b) => a.name > b.name)
         this.store.set({ groups: sortedGroups })
       })
@@ -43,7 +43,7 @@
       }, 4000);
     },
     ondestroy() {
-      this.classSessions.unsubscribe()
+      // this.classSessions.unsubscribe()
       clearInterval(this.interval)
     },
     data() {

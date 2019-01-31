@@ -1,7 +1,7 @@
 {#if $semesters && $semesters.length }
 <div class="semester-list">
   <p>There are {$semesters.length} semesters in the system.</p>
-  {#each $semesters as semester(semester.id)}
+  {#each $semesters as semester(semester._id)}
   <SemesterListRow {semester} />
   {/each}
 </div>

@@ -1,0 +1,30 @@
+<script>
+  import client from "../../utils/feathers"
+  export default {
+    // subscribe to class-sessions for a given semester
+    onstate({ changed, current, previous }) {
+      if (changed.semester && previous) {
+        if (this.subGroups) this.subGroups.unsubscribe()
+        this.setsub()
+      }
+    },
+    oncreate() {
+      this.setsub()
+    },
+    ondestroy() {
+      if (this.subGroups) this.subGroups.unsubscribe()
+    },
+    methods: {
+      setsub() {
+        const { semester } = this.get()
+        this.subGroups = client
+          .service("groups")
+          .watch()
+          .find({ query: { $sort: name, semester: semester._id } })
+          .subscribe(res => {
+            this.store.set({ groups: res.data })
+          })
+      }
+    }
+  }
+</script>
