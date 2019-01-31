@@ -33,11 +33,18 @@
     computed: {
       studentsByGroup: ({ students, $groups }) => {
         const existing = $groups.map(group => {
-          group.students = students.filter(student => student.group === group._id)
+          group.students = students.filter(student => {
+            console.log(student)
+            if (!student.group) return false
+            return student.groups.includes(group._id)
+          })
           return group
         })
         const nogroup = { name: "unassigned", students: [] }
-        nogroup.students = students.filter(student => student.group === null)
+        nogroup.students = students.filter(student => {
+          if (!student.groups) return true
+          return student.groups.length === 0
+        })
         console.log([...existing, nogroup])
         return [...existing, nogroup]
       }

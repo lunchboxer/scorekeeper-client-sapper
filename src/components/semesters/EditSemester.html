@@ -25,7 +25,6 @@
   import client from '../../utils/feathers'
   export default {
     oncreate() {
-      console.log(this.get().semester)
       this.set({
         endDate: this.get().semester.endDate.slice(0, 10),
         startDate: this.get().semester.startDate.slice(0, 10)
