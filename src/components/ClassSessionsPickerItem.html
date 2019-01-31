@@ -57,7 +57,7 @@
       distance: ({ time, endsAt, startsAt }) =>
         getRelativeClassTime(startsAt, endsAt, time),
       group: ({ session, $groups }) =>
-        $groups.find(group => group._id === session.studentGroupId)
+        $groups.find(group => group._id === session.group)
     },
     methods: {
       pickSession(session) {

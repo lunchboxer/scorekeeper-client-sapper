@@ -34,7 +34,7 @@
       // but we don't want student dissapearing in the middle of class
       // so only subscribe and make changes here in Active stage
       this.studentsSub = client.service('students').watch()
-        .find({ query: { group: session.studentGroupId } })
+        .find({ query: { group: session.group } })
         .subscribe(res => this.set({ students: res.data }))
       this.interval = setInterval(() => {
         this.set({ time: new Date() })
@@ -62,7 +62,7 @@
           return !attendances.find(attendance => attendance.student === student._id)
         })
         const newRecords = unmarkedStudents.map(student => {
-          return { student: student.id, session: session._id, status: "absent" }
+          return { student: student._id, session: session._id, status: "absent" }
         })
         newRecords.forEach(record => client.service("attendances").create(record))
         client.service('class-sessions').patch(id, { stage: "Started" })

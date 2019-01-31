@@ -13,11 +13,12 @@ const store = new StoreWithNotifications({
   recentPoint: null,
   authStatus: null,
   viewer: null,
-  semesters: []
+  semesters: [],
+  classSessions: []
 })
 
 store.compute('activeGroup', ['session', 'groups'], (session, groups) => {
-  return groups.find(group => group._id === session.studentGroupId)
+  return groups.find(group => group._id === session.group)
 })
 
 store.compute('currentSemester', ['semesters'], (semesters) => {
@@ -25,7 +26,7 @@ store.compute('currentSemester', ['semesters'], (semesters) => {
   const now = new Date()
   return semesters.find(semester => {
     const startDate = new Date(semester.startDate)
-    const endDate = new Date(semester.startDate)
+    const endDate = new Date(semester.endDate)
     return (startDate < now && now < endDate)
   })
 })
@@ -39,22 +40,10 @@ store.compute('nextSemester', ['semesters'], (semesters) => {
   })
 })
 
-// prioritize now, then next, then most recent
-store.compute('defaultSemester',
-  ['semesters', 'nextSemester', 'currentSemester'],
-  (semesters, currentSemester, nextSemester) => {
-    if (!semesters.length) return null
-    if (semesters.length === 1) return semesters[0]
-    // return most recent if no next
-    if (!currentSemester && !nextSemester) return semesters[0]
-    if (!currentSemester && nextSemester) return nextSemester
-    return currentSemester
-  })
-
 store.compute('semester',
-  ['chosenSemester', 'defaultSemester'],
-  (chosenSemester, defaultSemester) => {
-    return chosenSemester || defaultSemester
+  ['chosenSemester', 'currentSemester', 'nextSemester', 'semesters'],
+  (chosenSemester, currentSemester, nextSemester, semesters) => {
+    return chosenSemester || currentSemester || nextSemester || semesters[0]
   })
 
 export default store

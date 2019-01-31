@@ -50,7 +50,7 @@
     oncreate() {
       const { session } = this.store.get()
       client.service('students')
-        .find({ query: { group: session.studentGroupId } })
+        .find({ query: { group: session.group } })
         .then(res => this.store.set({ activeStudents: res.data }))
       this.interval = setInterval(() => {
         const now = new Date()

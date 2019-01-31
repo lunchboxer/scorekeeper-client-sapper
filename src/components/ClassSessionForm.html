@@ -7,10 +7,10 @@
       <FancyTextInput type="datetime-local" label="End date and time" name="endsAtField" bind:value=endsAt required />
 
       <label for="group-select">Class</label>
-      <select id="group-select" bind:value="group" required>
+      <select id="group-select" bind:value="group" on:change="console.log(group)" required>
         <option value=''>Unassigned</option>
         {#each $groups as group}
-        <option value={group.id}>{group.name}</option>
+        <option value={group._id}>{group.name}</option>
         {/each}
       </select>
       <br>
@@ -91,7 +91,7 @@
         const group = this.get().group || null
         client
           .service("class-sessions")
-          .create({ startsAt, endsAt, studentGroupId: group })
+          .create({ startsAt, endsAt, group })
           .then(() => {
             this.store.addMessage("New session added successfully")
             this.set({ error: '', show: false })
@@ -105,9 +105,10 @@
       editSession() {
         const { startsAt, endsAt, id } = this.get()
         const group = this.get().group || null
+        console.log(group)
         client
           .service("class-sessions")
-          .patch(id, { startsAt, endsAt, studentGroupId: group })
+          .patch(id, { startsAt, endsAt, group })
           .then(() => {
             this.store.addMessage("Session edited successfully")
             this.set({ error: '', show: false })

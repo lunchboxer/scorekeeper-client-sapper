@@ -7,7 +7,7 @@
   <span class="time">{startString}-{endTime}</span>
 </li>
 {:else}
-<ClassSessionForm edit id={session.id} startsAt={startsAtLocal} endsAt={endsAtLocal} group={group ? group.id : '' }
+<ClassSessionForm edit id={session._id} startsAt={startsAtLocal} endsAt={endsAtLocal} group={group ? group._id : '' }
   bind:show='edit' /> {/if}
 
 <style>
@@ -65,7 +65,7 @@
       distance: ({ session, time }) =>
         getRelativeClassTime(session.startsAt, session.endsAt, time),
       group: ({ session, $groups }) =>
-        $groups.find(group => group._id === session.studentGroupId)
+        $groups.find(group => group._id === session.group)
     }
   };
 </script>

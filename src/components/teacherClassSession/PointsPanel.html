@@ -46,7 +46,7 @@
       const { student } = this.get()
       const { session } = this.store.get()
       this.points = client.service("points").watch()
-        .find({ query: { studentId: student, classSessionId: session._id } })
+        .find({ query: { student, session: session._id } })
         .subscribe(res => this.set({ points: res.data }))
     },
     ondestroy() {
@@ -62,7 +62,7 @@
         event.preventDefault()
         const { student, pointsTally } = this.get()
         const { session } = this.store.get()
-        client.service("points").create({ value, studentId: student, classSessionId: session._id })
+        client.service("points").create({ value, student, session: session._id })
       }
     },
     helpers: {

@@ -54,13 +54,13 @@
         const { name, startDate, endDate } = this.get()
         try {
           const newSemester = await client.service("semesters").create({ name, startDate, endDate })
-          this.set({ error: '' })
           this.refs.form.reset()
           this.store.addMessage(`Saved semester '${name}'`)
           const semesters = [...this.store.get().semesters, newSemester].sort((a, b) => {
             return new Date(b.startDate) - new Date(a.startDate)
           })
           this.store.set({ semesters })
+          this.set({ error: '', showCreateSemester: false })
         } catch (error) {
           this.set({ error })
           this.store.addMessage(`Failed to save '${name}'`)

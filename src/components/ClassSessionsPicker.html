@@ -16,13 +16,14 @@
       ClassSessionsPickerItem: "./ClassSessionsPickerItem.html"
     },
     oncreate() {
-      const now = new Date()
-      const earlier = new Date()
-      const later = new Date()
-      const minutes = now.getMinutes()
-      const hours = now.getHours()
-      earlier.setMinutes(minutes - 30)
-      later.setHours(hours + 24)
+      // const now = new Date()
+      // const earlier = new Date()
+      // const later = new Date()
+      // const minutes = now.getMinutes()
+      // const hours = now.getHours()
+      // earlier.setMinutes(minutes - 30)
+      // later.setHours(hours + 24)
+      // do the earlier and later bit in a filter and computed prop
       // this.classSessions = client.service('class-sessions').watch()
       //   .find({
       //     query: {
@@ -49,7 +50,6 @@
     data() {
       return {
         time: new Date(),
-        sessions: [],
         filteredSessions: []
       }
     },
@@ -66,8 +66,9 @@
         later.setMinutes(minutes + 15)
         return later
       },
-      filteredSessions: ({ sessions, earlier, later }) => {
-        return sessions.filter(session => {
+      filteredSessions: ({ $classSessions, earlier, later }) => {
+        if (!$classSessions) return []
+        return $classSessions.filter(session => {
           const startsDate = new Date(session.startsAt)
           const endsDate = new Date(session.endsAt)
           return (startsDate < later && endsDate > earlier)

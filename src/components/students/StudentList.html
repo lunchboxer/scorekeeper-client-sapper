@@ -20,16 +20,9 @@
       const { currentSemester } = this.store.get()
       this.students = client.service('students').watch()
         .find().subscribe(students => this.set({ students: students.data }))
-
-      // moved to layout.html
-      // this.groups = client.service('groups').watch()
-      //   .find({ query: { $sort: name, semesterId: currentSemester } }).subscribe(res => {
-      //     this.store.set({ groups: res.data })
-      //   })
     },
     ondestroy() {
       this.students.unsubscribe()
-      // this.groups.unsubscribe()
     },
     data() {
       return {

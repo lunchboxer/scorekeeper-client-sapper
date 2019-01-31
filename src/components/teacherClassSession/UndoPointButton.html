@@ -21,7 +21,7 @@
       const { session } = this.store.get()
       if (session) {
         this.pointsSub = client.service('points').watch()
-          .find({ query: { classSessionId: session._id, $sort: { createdAt: -1 }, $limit: 10 } })
+          .find({ query: { session: session._id, $sort: { createdAt: -1 }, $limit: 10 } })
           .subscribe(res => {
             this.store.set({ recentPoint: res.data[0] })
           })
@@ -35,7 +35,7 @@
     computed: {
       student: ({ $activeStudents, $recentPoint }) => {
         if (!$activeStudents || !$recentPoint) return ''
-        const theone = $activeStudents.find(student => student.id === $recentPoint.studentId)
+        const theone = $activeStudents.find(student => student._id === $recentPoint.student)
         return theone.englishName || theone.chineseName
       }
     },
@@ -44,7 +44,7 @@
         event.preventDefault()
         const { recentPoint } = this.store.get()
         if (recentPoint) {
-          client.service('points').remove(recentPoint.id)
+          client.service('points').remove(recentPoint._id)
         }
       }
     }

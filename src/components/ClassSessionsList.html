@@ -5,10 +5,10 @@
 {/if}
 
 <AddClassSession semester={$semester} />
-{#if classSessions.length}
-<p>Showing {classSessions.length} class sessions. Click to edit.</p>
+{#if $classSessions.length}
+<p>Showing {$classSessions.length} class sessions. Click to edit.</p>
 <ul>
-  {#each classSessions as session (session._id)}
+  {#each $classSessions as session (session._id)}
   <ClassSessionsListItem {session} {time} />
   {/each}
 </ul>
@@ -26,19 +26,11 @@
 
   export default {
     oncreate() {
-      const { semester } = this.store.get()
-      if (semester) {
-        // most this to layout.html
-
-        // client.service('groups').find({ query: { semester: semester.id, $sort: name } })
-        //   .then(groups => this.store.set({ groups: groups.data }))
-      }
       this.interval = setInterval(() => {
         this.set({ time: new Date() })
       }, 20000);
     },
     ondestroy() {
-      if (this.classSessions) this.classSessions.unsubscribe()
       clearInterval(this.interval)
     },
     components: {
@@ -48,9 +40,7 @@
     },
     data() {
       return {
-        classSessions: [],
         time: new Date(),
-        chosenSemester: null
       }
     },
     computed: {
