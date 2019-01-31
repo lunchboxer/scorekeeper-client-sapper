@@ -5,10 +5,10 @@
 {/if}
 
 <script>
-  import client from '../utils/feathers.js'
-  import ClassSessionActive from './ClassSessionActive.html'
-  import ClassSessionStarted from './ClassSessionStarted.html'
-  import ClassSessionResults from './ClassSessionResults.html'
+  import client from '../../utils/feathers.js'
+  import SessionActive from './SessionActive.html'
+  import SessionStarted from './SessionStarted.html'
+  import SessionResults from './SessionResults.html'
 
   export default {
     oncreate() {
@@ -37,11 +37,11 @@
       stage: ({ $session }) => {
         switch ($session.stage) {
           case 'Active':
-            return ClassSessionActive
+            return SessionActive
           case 'Started':
-            return ClassSessionStarted
+            return SessionStarted
           case 'Ended':
-            return ClassSessionResults
+            return SessionResults
           default:
             return null
         }

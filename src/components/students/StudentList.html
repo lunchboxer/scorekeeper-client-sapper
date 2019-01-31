@@ -8,19 +8,19 @@
 {/if}
 
 <script>
-  import client from "../utils/feathers.js"
+  import client from "../../utils/feathers.js"
   export default {
     components: {
       StudentGroupListItem: './StudentGroupListItem.html',
       CreateNewClassButton: './CreateNewClassButton.html'
     },
     oncreate() {
+      const { currentSemester } = this.store.get()
       this.students = client.service('students').watch()
         .find().subscribe(students => this.set({ students: students.data }))
       this.groups = client.service('student-groups').watch()
-        .find().subscribe(groups => {
-          const sortedGroups = groups.data.sort((a, b) => a.name > b.name)
-          this.store.set({ groups: sortedGroups })
+        .find({ query: { $sort: name, semesterId: currentSemester } }).subscribe(res => {
+          this.store.set({ groups: res.data })
         })
     },
     ondestroy() {
@@ -40,6 +40,7 @@
         })
         const nogroup = { name: "unassigned", students: [] }
         nogroup.students = students.filter(student => student.group === null)
+        console.log([...existing, nogroup])
         return [...existing, nogroup]
       }
     }

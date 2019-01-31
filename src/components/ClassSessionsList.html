@@ -1,6 +1,11 @@
 <p>View recent and upcoming class sessions</p>
 <AddClassSession />
 
+{#if $currentSemester}
+<h2>Current Semester: {semester.name}</h2>
+{:elseif $nextSemester}
+<h2>Next Semester: {semester.name}</h2>
+{/if}
 {#if classSessions.length}
 <p>Showing {classSessions.length} class sessions. Click to edit.</p>
 <ul>
@@ -16,8 +21,11 @@
 
   export default {
     oncreate() {
+      const { semester } = this.get()
+      console.log(semester)
       this.classSessions = client.service('class-sessions').watch()
-        .find({query: {$sort : {startsAt: -1}}}).subscribe(res => {
+        .find({ query: { $sort: { startsAt: -1 }, startsAt: { $gte: semester.startDate }, endsAt: { $lte: semester.endDate } } })
+        .subscribe(res => {
           this.set({ classSessions: res.data })
         })
       client.service('student-groups').find().then(groups => {
@@ -29,7 +37,7 @@
       }, 20000);
     },
     ondestroy() {
-      this.classSessions.unsubscribe()
+      if (this.classSessions) this.classSessions.unsubscribe()
       clearInterval(this.interval)
     },
     components: {
@@ -40,6 +48,14 @@
       return {
         classSessions: [],
         time: new Date()
+      }
+    },
+    computed: {
+      semester: ({ $currentSemester, $nextSemester, $semesters }) => {
+        if (!$semesters.length) return null
+        if (!$currentSemester && !$nextSemester) return null
+        if (!$currentSemester && $nextSemester) return $nextSemester
+        return $currentSemester
       }
     }
   }

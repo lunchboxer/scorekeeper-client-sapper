@@ -19,13 +19,23 @@ const store = new StoreWithNotifications({
 store.compute('activeGroup', ['session', 'groups'], (session, groups) => {
   return groups.find(group => group.id === session.studentGroupId)
 })
+
 store.compute('currentSemester', ['semesters'], (semesters) => {
   if (!semesters || !semesters.length) return null
   const now = new Date()
-  return semesters.filter(semester => {
+  return semesters.find(semester => {
     const startDate = new Date(semester.startDate)
     const endDate = new Date(semester.startDate)
     return (startDate < now && now < endDate)
+  })
+})
+
+store.compute('nextSemester', ['semesters'], (semesters) => {
+  if (!semesters || !semesters.length) return null
+  const now = new Date()
+  return semesters.find(semester => {
+    const startDate = new Date(semester.startDate)
+    return startDate > now
   })
 })
 

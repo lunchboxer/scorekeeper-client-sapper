@@ -72,14 +72,14 @@
 </style>
 
 <script>
-  import client from '../utils/feathers.js'
+  import client from '../../utils/feathers.js'
 
   export default {
     oncreate() {
       this.refs.container.scrollIntoView({ behavior: 'smooth' })
     },
     components: {
-      FancyTextInput: './FancyTextInput.html',
+      FancyTextInput: '../FancyTextInput.html',
       DeleteStudentButton: './DeleteStudentButton.html'
     },
     data() {

@@ -8,7 +8,7 @@
 {/if}
 
 {#if $session.id}
-<ClassSessionLoader />
+<SessionSwitcher />
 {:else}
 <p>Loading session...</p>
 {/if}
@@ -27,7 +27,7 @@
       return { sessionId }
     },
     components: {
-      ClassSessionLoader: "../../components/ClassSessionLoader.html"
+      SessionSwitcher: "../../components/teacherClassSession/SessionSwitcher.html"
     },
     async oncreate() {
       const { sessionId } = this.get()
