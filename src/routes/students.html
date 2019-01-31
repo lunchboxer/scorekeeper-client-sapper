@@ -1,8 +1,11 @@
 <svelte:head>
   <title>Students</title>
 </svelte:head>
-
+{#if $semester}
+<h1>{$semester.name} Students</h1>
+{:else}
 <h1>Students</h1>
+{/if}
 
 {#if $login}
 <StudentList />
