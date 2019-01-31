@@ -1,5 +1,7 @@
 <p>There are {students.length || 'no'} students registered {$groups.length && 'in ' + $groups.length + ' classes'}.</p>
+{#if $semester && $semester.endDate > now }
 <CreateNewClassButton />
+{/if}
 {#if studentsByGroup}
 <p>Click a class name to change it.</p>
 {#each studentsByGroup as group (group._id)}
@@ -18,18 +20,21 @@
       const { currentSemester } = this.store.get()
       this.students = client.service('students').watch()
         .find().subscribe(students => this.set({ students: students.data }))
-      this.groups = client.service('groups').watch()
-        .find({ query: { $sort: name, semesterId: currentSemester } }).subscribe(res => {
-          this.store.set({ groups: res.data })
-        })
+
+      // moved to layout.html
+      // this.groups = client.service('groups').watch()
+      //   .find({ query: { $sort: name, semesterId: currentSemester } }).subscribe(res => {
+      //     this.store.set({ groups: res.data })
+      //   })
     },
     ondestroy() {
       this.students.unsubscribe()
-      this.groups.unsubscribe()
+      // this.groups.unsubscribe()
     },
     data() {
       return {
-        students: []
+        students: [],
+        now: new Date().toISOString()
       }
     },
     computed: {

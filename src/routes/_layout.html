@@ -1,10 +1,10 @@
-{#if preloading}
-<div>Loading...</div>
-{/if}
-
 {#if child.segment !== 'viewer'}
 {#if $login}
 <SemestersLoader />
+{#if $semester}
+<ClassSessionsLoader semester={$semester} />
+<GroupsLoader semester={$semester} />
+{/if}
 <MessageListener />
 <Nav segment={child.segment} />
 {/if}
@@ -31,7 +31,9 @@
       Login: "../components/Login.html",
       Authenticating: "../components/Authenticating.html",
       MessageListener: "../components/MessageListener.html",
-      SemestersLoader: "../components/semesters/SemestersLoader.html"
+      SemestersLoader: "../components/semesters/SemestersLoader.html",
+      ClassSessionsLoader: "../components/ClassSessionsLoader.html",
+      GroupsLoader: '../components/students/GroupsLoader.html'
     },
     data() {
       return {

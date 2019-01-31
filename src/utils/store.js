@@ -39,4 +39,22 @@ store.compute('nextSemester', ['semesters'], (semesters) => {
   })
 })
 
+// prioritize now, then next, then most recent
+store.compute('defaultSemester',
+  ['semesters', 'nextSemester', 'currentSemester'],
+  (semesters, currentSemester, nextSemester) => {
+    if (!semesters.length) return null
+    if (semesters.length === 1) return semesters[0]
+    // return most recent if no next
+    if (!currentSemester && !nextSemester) return semesters[0]
+    if (!currentSemester && nextSemester) return nextSemester
+    return currentSemester
+  })
+
+store.compute('semester',
+  ['chosenSemester', 'defaultSemester'],
+  (chosenSemester, defaultSemester) => {
+    return chosenSemester || defaultSemester
+  })
+
 export default store

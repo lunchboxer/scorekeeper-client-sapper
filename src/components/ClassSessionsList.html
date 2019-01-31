@@ -1,11 +1,10 @@
-<p>View recent and upcoming class sessions</p>
-<AddClassSession />
-
-{#if $currentSemester}
-<h2>Current Semester: {semester.name}</h2>
-{:elseif $nextSemester}
-<h2>Next Semester: {semester.name}</h2>
+{#if $semester}
+<h2>{$semester.name} classes</h2>
+<p class="subtitle">{startDate} to {endDate}</p>
+<SemesterSwitcher chosenId={$semester._id} />
 {/if}
+
+<AddClassSession semester={$semester} />
 {#if classSessions.length}
 <p>Showing {classSessions.length} class sessions. Click to edit.</p>
 <ul>
@@ -16,27 +15,24 @@
 
 {/if}
 
+<style>
+  .subtitle {
+    margin-top: -1rem;
+  }
+</style>
+
 <script>
   import client from '../utils/feathers.js'
 
   export default {
     oncreate() {
-      const { semester } = this.get()
-      const { semesters } = this.store.get()
-      console.log(semester)
-      console.log(semesters)
+      const { semester } = this.store.get()
       if (semester) {
-        this.classSessions = client.service('class-sessions').watch()
-          .find({ query: { $sort: { startsAt: -1 }, startsAt: { $gte: semester.startDate }, endsAt: { $lte: semester.endDate } } })
-          .subscribe(res => {
-            this.set({ classSessions: res.data })
-          })
-      }
+        // most this to layout.html
 
-      client.service('groups').find().then(groups => {
-        const sortedGroups = groups.data.sort((a, b) => a.name > b.name)
-        this.store.set({ groups: sortedGroups })
-      })
+        // client.service('groups').find({ query: { semester: semester.id, $sort: name } })
+        //   .then(groups => this.store.set({ groups: groups.data }))
+      }
       this.interval = setInterval(() => {
         this.set({ time: new Date() })
       }, 20000);
@@ -47,20 +43,26 @@
     },
     components: {
       AddClassSession: './AddClassSession.html',
-      ClassSessionsListItem: './ClassSessionsListItem.html'
+      ClassSessionsListItem: './ClassSessionsListItem.html',
+      SemesterSwitcher: './semesters/SemesterSwitcher.html'
     },
     data() {
       return {
         classSessions: [],
-        time: new Date()
+        time: new Date(),
+        chosenSemester: null
       }
     },
     computed: {
-      semester: ({ $currentSemester, $nextSemester, $semesters }) => {
-        if (!$semesters.length) return null
-        if (!$currentSemester && !$nextSemester) return null
-        if (!$currentSemester && $nextSemester) return $nextSemester
-        return $currentSemester
+      startDate: ({ $semester }) => {
+        if (!$semester) return null
+        const date = new Date($semester.startDate)
+        return date.toDateString()
+      },
+      endDate: ({ $semester }) => {
+        if (!$semester) return null
+        const date = new Date($semester.endDate)
+        return date.toDateString()
       }
     }
   }

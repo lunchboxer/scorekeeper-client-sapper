@@ -1,12 +1,17 @@
-<div class="modal">
-  <div class="modal-content">
+<div class="modal" on:click='fire("close")'></div>
 
-    <div class="modal-stuff">
-      <span class="close-button">&times;</span>
-      <slot />
+<div class="modal-content">
+  <div class="modal-stuff">
+    <div class="modal-header">
+      <h2>{title}</h2>
+      <i class="close-button material-icons" on:click='fire("close")'>close</i>
     </div>
+
+    <slot />
+
   </div>
 </div>
+
 
 <style>
   .modal {
@@ -15,7 +20,22 @@
     top: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
+    background-color: rgba(50, 50, 50, 0.5);
+  }
+
+  .modal-header {
+    display: flex;
+    /* width: 100%; */
+    justify-content: space-between;
+    padding-bottom: 1rem;
+    margin-bottom: 1rem;
+
+  }
+
+  .modal-header h2 {
+    margin: 0 1rem 1rem 0;
+    padding: 0;
+    white-space: pre;
   }
 
   .modal-content {
@@ -25,10 +45,9 @@
     transform: translate(-50%, -50%);
     background-color: var(--background);
     padding: 2rem;
-    width: 100%;
-    max-width: 600px;
-    margin: 1rem;
-    border-radius: 0.5rem;
+    /* width: 100%; */
+    max-width: calc(100vw - 4rem);
+    border-radius: 0.8rem;
     text-align: center;
   }
 
@@ -39,19 +58,13 @@
   }
 
   .close-button {
-    width: 1.5rem;
+    /* position: absolute;
+    top: 0px;
+    right: 0px; */
+    font-size: 2rem;
+    /* padding: 2rem; */
     text-align: center;
     cursor: pointer;
-    margin: 1em;
+    margin-left: 1rem;
   }
 </style>
-
-<script>
-  export default {
-    data() {
-      return {
-        show: true
-      }
-    }
-  }
-</script>
