@@ -1,4 +1,4 @@
-<a href="/sessions/{session.id}">
+<a href="/sessions/{session._id}">
   <li>
     <div class="main">
       <span class="group">{group ? group.name + ' class' : 'No class'}</span>
@@ -57,7 +57,7 @@
       distance: ({ time, endsAt, startsAt }) =>
         getRelativeClassTime(startsAt, endsAt, time),
       group: ({ session, $groups }) =>
-        $groups.find(group => group.id === session.studentGroupId)
+        $groups.find(group => group._id === session.studentGroupId)
     },
     methods: {
       pickSession(session) {

@@ -37,7 +37,7 @@
         event.target.querySelector("input[type=submit]").disabled = true
         const { name } = this.get()
         client
-          .service("student-groups")
+          .service("groups")
           .create({ name })
           .then(() => {
             this.refs.submit.disabled = false

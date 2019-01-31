@@ -65,13 +65,13 @@
         var ageDate = new Date(diffMs)
         return Math.abs(ageDate.getUTCFullYear() - 1970)
       },
-      group: ({ $groups, student }) => $groups ? $groups.filter(group => group.id === student.group)[0] : null
+      group: ({ $groups, student }) => $groups ? $groups.filter(group => group._id === student.group)[0] : null
     },
     methods: {
       handleDelete(event) {
         const { student } = this.get()
         event.preventDefault()
-        client.service('students').remove(student.id).then(
+        client.service('students').remove(student._id).then(
           this.store.addMessage(`Student #${student.id}, ${student.chineseName} deleted.`)
         )
       },

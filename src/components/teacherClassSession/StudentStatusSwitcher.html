@@ -28,7 +28,7 @@
       setStatus(status) {
         const arrivedAt = (status !== 'absent') ? new Date() : null
         const { attendance } = this.get()
-        client.service('attendances').patch(attendance.id, { status, arrivedAt })
+        client.service('attendances').patch(attendance._id, { status, arrivedAt })
       }
     }
   }

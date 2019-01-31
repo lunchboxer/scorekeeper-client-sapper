@@ -17,7 +17,7 @@
     </tr>
   </thead>
   <tbody>
-    {#each presentStudents as student (student.id)}
+    {#each presentStudents as student (student._id)}
     <ResultsRow {student} sessionId={$session.id} attendances={$attendances} />
     {:else}
     <tr>
@@ -75,7 +75,7 @@
       absentStudents: ({ students, $attendances }) => {
         if (!$attendances || !students) return []
         return students.filter(student => {
-          const myattendance = $attendances.find(attendance => attendance.student === student.id)
+          const myattendance = $attendances.find(attendance => attendance.student === student._id)
           return myattendance && myattendance.status === 'absent'
         })
       },
@@ -88,7 +88,7 @@
       presentStudents: ({ students, $attendances }) => {
         if (!$attendances || !students) return []
         return students.filter(student => {
-          const myattendance = $attendances.find(attendance => attendance.student === student.id)
+          const myattendance = $attendances.find(attendance => attendance.student === student._id)
           return myattendance && myattendance.status !== 'absent'
         })
       },

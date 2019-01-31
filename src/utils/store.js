@@ -17,7 +17,7 @@ const store = new StoreWithNotifications({
 })
 
 store.compute('activeGroup', ['session', 'groups'], (session, groups) => {
-  return groups.find(group => group.id === session.studentGroupId)
+  return groups.find(group => group._id === session.studentGroupId)
 })
 
 store.compute('currentSemester', ['semesters'], (semesters) => {

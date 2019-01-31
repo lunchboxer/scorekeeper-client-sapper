@@ -9,7 +9,7 @@
 {#if classSessions.length}
 <p>Showing {classSessions.length} class sessions. Click to edit.</p>
 <ul>
-  {#each classSessions as session (session.id)}
+  {#each classSessions as session (session._id)}
   <ClassSessionsListItem {session} {time} />
   {/each}
 </ul>
@@ -22,13 +22,18 @@
   export default {
     oncreate() {
       const { semester } = this.get()
+      const { semesters } = this.store.get()
       console.log(semester)
-      this.classSessions = client.service('class-sessions').watch()
-        .find({ query: { $sort: { startsAt: -1 }, startsAt: { $gte: semester.startDate }, endsAt: { $lte: semester.endDate } } })
-        .subscribe(res => {
-          this.set({ classSessions: res.data })
-        })
-      client.service('student-groups').find().then(groups => {
+      console.log(semesters)
+      if (semester) {
+        this.classSessions = client.service('class-sessions').watch()
+          .find({ query: { $sort: { startsAt: -1 }, startsAt: { $gte: semester.startDate }, endsAt: { $lte: semester.endDate } } })
+          .subscribe(res => {
+            this.set({ classSessions: res.data })
+          })
+      }
+
+      client.service('groups').find().then(groups => {
         const sortedGroups = groups.data.sort((a, b) => a.name > b.name)
         this.store.set({ groups: sortedGroups })
       })

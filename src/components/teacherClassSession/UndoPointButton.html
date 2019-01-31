@@ -21,7 +21,7 @@
       const { session } = this.store.get()
       if (session) {
         this.pointsSub = client.service('points').watch()
-          .find({ query: { classSessionId: session.id, $sort: { createdAt: -1 }, $limit: 10 } })
+          .find({ query: { classSessionId: session._id, $sort: { createdAt: -1 }, $limit: 10 } })
           .subscribe(res => {
             this.store.set({ recentPoint: res.data[0] })
           })

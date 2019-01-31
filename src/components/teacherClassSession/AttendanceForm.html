@@ -1,7 +1,7 @@
 <h3>Attendance</h3>
 
 <p>{numPresent} out of {students.length} students present.</p>
-{#each students as student (student.id)}
+{#each students as student (student._id)}
 <AttendanceRow {student} />
 {/each}
 

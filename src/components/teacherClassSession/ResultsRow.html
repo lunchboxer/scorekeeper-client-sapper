@@ -35,7 +35,7 @@
         client
           .service("points")
           .find({
-            query: { studentId: student.id, classSessionId: sessionId }
+            query: { studentId: student._id, classSessionId: sessionId }
           })
           .then(res => this.set({ points: res.data }));
       }
@@ -49,7 +49,7 @@
       attendance: ({ student, attendances }) => {
         if (!attendances) return null;
         return attendances.find(
-          attendance => attendance.student === student.id
+          attendance => attendance.student === student._id
         );
       },
       pointsTally: ({ points }) =>

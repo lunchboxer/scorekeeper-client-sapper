@@ -9,7 +9,7 @@
 {#if absentStudents.length}
 <div class="absentlist">
   <h3>Absent students</h3>
-  {#each absentStudents as student (student.id)}
+  {#each absentStudents as student (student._id)}
   <AttendanceRow {student} started=true />
   {/each}
 </div>
@@ -66,13 +66,13 @@
     computed: {
       absentStudents: ({ $activeStudents, $attendances }) => {
         return $activeStudents.filter(student => {
-          const myattendance = $attendances.find(attendance => attendance.student === student.id)
+          const myattendance = $attendances.find(attendance => attendance.student === student._id)
           return myattendance && ['absent', 'lateLeftEarly', 'leftEarly'].includes(myattendance.status)
         })
       },
       presentStudents: ({ $activeStudents, $attendances }) => {
         return $activeStudents.filter(student => {
-          const myattendance = $attendances.find(attendance => attendance.student === student.id)
+          const myattendance = $attendances.find(attendance => attendance.student === student._id)
           return myattendance && ['present', 'late'].includes(myattendance.status)
         })
       },

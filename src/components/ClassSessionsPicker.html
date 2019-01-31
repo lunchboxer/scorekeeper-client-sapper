@@ -1,6 +1,6 @@
 {#if filteredSessions.length}
 <h3>Upcoming or ongoing lessons</h3>
-{#each filteredSessions as session (session.id)}
+{#each filteredSessions as session (session._id)}
 <ClassSessionsPickerItem {session} {time} />
 {/each}
 {:else}
@@ -34,7 +34,7 @@
           const sessions = res.data.sort((a, b) => a.startsAt > b.startsAt)
           this.set({ sessions })
         })
-      client.service('student-groups').find().then(groups => {
+      client.service('groups').find().then(groups => {
         const sortedGroups = groups.data.sort((a, b) => a.name > b.name)
         this.store.set({ groups: sortedGroups })
       })

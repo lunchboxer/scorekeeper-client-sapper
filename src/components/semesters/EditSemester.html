@@ -44,9 +44,9 @@
         const submitButton = event.target.querySelector("input[type=submit]")
         submitButton.disabled = true
         submitButton.value = "Saving ..."
-        const { name, startDate, endDate, id } = this.get().semester
+        const { name, startDate, endDate, _id } = this.get().semester
         try {
-          const newSemester = await client.service("semesters").patch(id, { name, startDate, endDate })
+          const newSemester = await client.service("semesters").patch(_id, { name, startDate, endDate })
           this.store.addMessage(`Saved semester '${name}'`)
           this.updateSemesters(newSemester)
           this.set({ showEdit: false })
@@ -63,7 +63,7 @@
       updateSemesters(newSemester) {
         const { semesters } = this.store.get()
         const updatedSemesters = semesters.map(semester => {
-          if (semester.id !== newSemester.id) return semester
+          if (semester._id !== newSemester._id) return semester
           return newSemester
         })
         this.store.set({ semesters: updatedSemesters })

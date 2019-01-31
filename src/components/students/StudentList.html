@@ -2,8 +2,8 @@
 <CreateNewClassButton />
 {#if studentsByGroup}
 <p>Click a class name to change it.</p>
-{#each studentsByGroup as group (group.id)}
-<StudentGroupListItem {...group} groupId={group.id} />
+{#each studentsByGroup as group (group._id)}
+<StudentGroupListItem {...group} groupId={group._id} />
 {/each}
 {/if}
 
@@ -18,7 +18,7 @@
       const { currentSemester } = this.store.get()
       this.students = client.service('students').watch()
         .find().subscribe(students => this.set({ students: students.data }))
-      this.groups = client.service('student-groups').watch()
+      this.groups = client.service('groups').watch()
         .find({ query: { $sort: name, semesterId: currentSemester } }).subscribe(res => {
           this.store.set({ groups: res.data })
         })
@@ -35,7 +35,7 @@
     computed: {
       studentsByGroup: ({ students, $groups }) => {
         const existing = $groups.map(group => {
-          group.students = students.filter(student => student.group === group.id)
+          group.students = students.filter(student => student.group === group._id)
           return group
         })
         const nogroup = { name: "unassigned", students: [] }

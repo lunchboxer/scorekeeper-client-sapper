@@ -59,10 +59,10 @@
         const { attendances, session } = this.store.get()
         const { students } = this.get()
         const unmarkedStudents = students.filter(student => {
-          return !attendances.find(attendance => attendance.student === student.id)
+          return !attendances.find(attendance => attendance.student === student._id)
         })
         const newRecords = unmarkedStudents.map(student => {
-          return { student: student.id, session: session.id, status: "absent" }
+          return { student: student.id, session: session._id, status: "absent" }
         })
         newRecords.forEach(record => client.service("attendances").create(record))
         client.service('class-sessions').patch(id, { stage: "Started" })

@@ -7,7 +7,7 @@
 <p class="error">{error.message}</p>
 {/if}
 
-{#if $session.id}
+{#if $session._id}
 <SessionSwitcher />
 {:else}
 <p>Loading session...</p>

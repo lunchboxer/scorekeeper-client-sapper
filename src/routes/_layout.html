@@ -51,7 +51,7 @@
       async authenticatedListener(res) {
         const payload = await client.passport.verifyJWT(res.accessToken)
         const user = await client.service('users').get(payload.userId)
-        const groups = await client.service('student-groups').find()
+        const groups = await client.service('groups').find()
         this.store.set({ user, login: res.accessToken, groups: groups.data, authStatus: 'loggedIn' })
       },
       logoutListener() {
