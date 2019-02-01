@@ -111,39 +111,43 @@
           this.addStudent()
         }
       },
-      editStudent() {
-        const { chineseName, pinyinName, englishName, birthdate, _id } = this.get()
-        const group = this.get().group || null
+      async editStudent() {
+        const { chineseName, pinyinName, englishName, birthdate, _id, group } = this.get()
         const gender = this.get().gender || null
-        client
-          .service("students")
-          .update(_id, { chineseName, pinyinName, englishName, gender, birthdate, groups: group })
-          .then(() => {
-            this.store.addMessage("Student edited successfully")
-            this.set({ error: '', show: false })
-          })
-          .catch(error => {
-            this.refs.submit.disabled = false
-            this.set({ error: error.message })
-            this.store.addMessage("There was a problem editing the student.")
-          })
+        const query = group
+          ? { chineseName, pinyinName, englishName, gender, birthdate, $push: { groups: group } }
+          : { chineseName, pinyinName, englishName, gender, birthdate }
+        try {
+          const updatedStudent = await client.service("students")
+            .patch(_id, query)
+          console.log('updatedstudent', updatedStudent)
+          this.store.addMessage("Student edited successfully")
+          this.set({ error: '', show: false })
+        } catch (error) {
+          this.set({ error: error.message })
+          this.store.addMessage("There was a problem editing the student.")
+        } finally {
+          this.refs.submit && (this.refs.submit.disabled = false)
+        }
       },
-      addStudent() {
+      async addStudent() {
         const { chineseName, pinyinName, englishName, birthdate, group } = this.get()
         const gender = this.get().gender || null
-        client
-          .service("students")
-          .create({ chineseName, pinyinName, englishName, gender, birthdate, groups: group })
-          .then(() => {
-            this.refs && (this.refs.submit.disabled = false)
-            this.store.addMessage("New student added successfully")
-            this.set({ error: '', show: false })
-          })
-          .catch(error => {
-            this.refs && (this.refs.submit.disabled = false)
-            this.set({ error: error.message })
-            this.store.addMessage("There was a problem adding the student.")
-          })
+        const query = !group
+          ? { chineseName, pinyinName, englishName, gender, birthdate }
+          : { chineseName, pinyinName, englishName, gender, birthdate, groups: group }
+        try {
+          const newStudent = await client.service("students")
+            .create(query)
+          this.store.addMessage("New student created successfully")
+          this.set({ error: '', show: false })
+        } catch (error) {
+          this.set({ error: error.message })
+          this.store.addMessage("There was a problem adding the student.")
+          return
+        } finally {
+          this.refs.submit && (this.refs.submit.disabled = false)
+        }
       }
     }
   }
